@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Form</h1>
+    
+    <form action="" method="POST">
+        <div>
+            <label for="username">username: </label>
+            <input type="text" id="username" placeholder="id를 입력하세요" name="username">
+        </div>
+        <div>
+            <label for="pswd">pw: </label>
+            <input type="password" id="pswd" required name="pw">
+        </div>
+        <div>
+            <button>Log in</button>
+        </div>
+    </form>
+    <hr>
+    <form action="https://google.com/search" method="GET">
+        키워드: <input type="text" name="q">
+        <button>GO!</button>
+    </form>
+    <!-- 
+        1. action="": 현재 url 뒤에 ? + query
+        2. action="google.com/search": action URL 뒤에 ? + query
+     -->
+</body>
+</html>
