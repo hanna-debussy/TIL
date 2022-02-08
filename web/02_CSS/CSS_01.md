@@ -42,9 +42,11 @@ https://flexboxfroggy.com/#ko 의 도움을 많이 받았다
 
 ## align-items
 
-`align-items: ____;`는 세로선에서의 이동을 맡는다.
+`align-items: ____;`는 교차축에서의 정렬을 맡는다.
 
 
+
+*주축이 가로라는 전제 하
 
 `flex-start`: 위 -> 아래 (default)
 
