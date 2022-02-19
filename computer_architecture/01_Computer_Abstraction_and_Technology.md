@@ -145,14 +145,4 @@ Dram 용량이 또 무어의 법칙에 맞게 증가한다 (물론 y축은 log s
   * Clock Cycle = 1 / Clock Rate
     1nsec(10^-9) clock cycle = 1GHz(10^9) clock rate
 
- 
 
- 
-
- 
-
- 
-
- 
-
- 
