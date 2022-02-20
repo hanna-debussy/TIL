@@ -24,7 +24,22 @@
       matrix = [list(map(int, input().split())) for _ in range(N)]
   ```
 
-* 0
+* 2차원 배열 꺼내서 출력하는 법
+
+  ```python
+  for tc in range(1, T+1):
+      N = int(input())
+      answer = spiral(N)
+      print(f"#{tc}")
+      for n in answer:
+          print(*n)
+  ```
+  
+  
+
+* 
+
+* 
 
 * 0 두르는 법
 

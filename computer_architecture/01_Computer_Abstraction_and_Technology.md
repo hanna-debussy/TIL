@@ -32,9 +32,9 @@
 
 - byte = bit * 8
 
-- kilo > mega > giga > tera > peta > exa
-  - 2^10 > ^20 > ^30 …
-  - _ > _ > 10^6 > 10^9 > 10^12 … (네트워크를 말할 때는 수가 달라짐)
+- kilo < mega < giga < tera < peta < exa
+  - 2^10 < ^20 < ^30 …
+  - _ < _ < 10^6 < 10^9 < 10^12 … (네트워크를 말할 때는 수가 달라짐)
 
  
 
@@ -144,5 +144,4 @@ Dram 용량이 또 무어의 법칙에 맞게 증가한다 (물론 y축은 log s
     ex) 40GHz = 4000MHz = 4.0 * 10^9Hz
   * Clock Cycle = 1 / Clock Rate
     1nsec(10^-9) clock cycle = 1GHz(10^9) clock rate
-
 
