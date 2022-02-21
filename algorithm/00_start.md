@@ -20,9 +20,11 @@
 
 * 주어진 N*N 배열을 list 형태로 만드는 법
 
-* ```python
+  ```python
       matrix = [list(map(int, input().split())) for _ in range(N)]
   ```
+
+  
 
 * 2차원 배열 꺼내서 출력하는 법
 
@@ -34,12 +36,8 @@
       for n in answer:
           print(*n)
   ```
-  
-  
 
-* 
-
-* 
+  
 
 * 0 두르는 법
 
@@ -51,6 +49,24 @@
   matrix.append([0]*(N+2))
   ```
 
-  
 
-  
+
+
+* 1~N 까지 숫자 들어간 리스트
+
+  ```python
+  matrix = [num for num in range(1, N+1)]
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+

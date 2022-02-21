@@ -116,15 +116,39 @@ for i in range(N):
 ```python
 matrix = [3, 6, 7, 2, 5, 4]
 n = len(matrix)
-for i in range(1<<n):
+for i in range(1<<n):  # 연산자를 여기서 걸면 (참고로 1<<n 은 2**n이랑 같다)
+    # 여기서부터 0과 1을 통해 저 요소들이 들어가니마니를 결정해서 subset을 만듦
+    subset = []
     for j in range(n):
         if i & (1<<j):
-            print(matrix[j], end=", ")
-    print()
-print()
-
+            subset.append(matrix[j])
+	print(subset)
 # 뭔 말이냐면 부분집합 만들 때 넣니마니 하는 걸 0과 1로 하자 이거임
 ```
 
 
+
+### 이진검색
+
+자료가 정렬된 상태여야 한다
+
+검색 과정
+
+* 자료의 중앙에 있는 원소 골라서 중앙 원소와 찾고자 하는 값을 비교
+* 목표값이 중앙 원소보다 작으면 왼쪽으로 찾고, 반대는 오른쪽으로 찾음
+
+```python
+def binarsySearch(aList, N, key):
+    start = 0
+    end = N-1
+    while start <= end:
+        middle = (start+end)//2
+        if aList[middle] == key:  # 검색 성공
+            return True
+        elif aList[middle] > key:  # 왼쪽으로
+            end = middle - 1
+        else:
+            start = middle + 1
+    return false  # 검색 실패
+```
 
