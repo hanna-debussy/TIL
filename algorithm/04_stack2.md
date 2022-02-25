@@ -30,6 +30,7 @@ def f(idx, N):
 a = [1, 2, 3]  # f함수로 나중에 소환시키면 댐 이건 패스하깨
 bit = [0] * len(a)
 f(0, 3)  # 0과 1로 나오는 넣었다 뺐다
+
 ```
 
 
@@ -66,6 +67,7 @@ a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 bit = [0] * len(a)
 f2(0, len(a), 15)
 print(count)  # 15든 55든 2047로 항상 같음 이거는 백트래킹 없이 끝까지 모든 걸 돌리는 거라
+
 ```
 
 * 백트래킹을 해보쟈
@@ -101,6 +103,7 @@ bit = [0] * N
 t = 15
 f3(0, N, 0, t)
 print(count)  # 55처럼 끝까지 돌아야 할 때는 2047로 같지만 중간 값(15)이면 백트래킹이 되어서 훨씬 줄어든다
+
 ```
 
 ```python
@@ -140,6 +143,7 @@ t = 55
 count = 0
 f3(0, N, 0, t, sum(a))
 print(count)  # 21 혁 신 적
+
 ```
 
 
@@ -163,6 +167,7 @@ def backtrack(a, k, input):
         for i in range(ncandidates):
             a[k] = c[i]
             backtrack(a, k, input)
+            
 ```
 
 * 1, 2, 3으로 순열을 만들어보자
@@ -170,30 +175,72 @@ def backtrack(a, k, input):
 * 두 번째 자리도 같다 2, 3 이고 그 다음 3 넣으려고 2와 3을 바꾸기
 
 ```python
-# 알고리즘으로 쓰자면
-def my_func(i, N):
+def func1(i, N):
     if i == N:  # 순열 완성
-        pass
+        print(p)
     else:
-        # P[i] 결정하고
-        my_func(i+1, N)  # 다음 거 결정하는 재귀
-        # P[i] 다시 돌아오기 (P[i]에 그 다음 거(2였으면 3) 넣으려고)
+        for j in range(i, N):  # 나를 포함해 내 앞으로 샥샥 바꾸면서 만들 거임
+            # P[i] 결정하고
+            p[i], p[j] = p[j], p[i]
+            # 다음 거 결정하는 재귀
+            func1(i+1, N)
+             # P[i] 다시 돌아오기 (P[i]에 그 다음 거(2였으면 3) 넣으려고)
+            p[i], p[j] = p[j], p[i]
+
+N = 3
+p = [x for x in range(1, N+1)]  # 1~3
+func1(0, N)
+
 ```
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## 분할 정복 알고리즘
+
+이름은 거창한데 걍 또 같음 주어진 걸 쪼개서 쪼개서 해결
+
+
+
+### 퀵 정렬 quick sort
+
+* https://visualgo.net/en/sorting 에 qui 들어가면 quick sort를 그림으로 볼 수 있다
+* 피봇(기준점)을 잡고 피봇보다 작으면 앞으로, 크면 뒤로 보낸다
+* 피봇을 뭐로 잡는지는 전혀 중요하지 않음 
+* 전통적인 방법
+  * 피봇을 기준으로 가장 왼쪽(오름차순 기준 작은 거 모이는)과 가장 오른쪽(큰 거 ㅇㅇ) 인덱스가 분류를 하면서 가운데로 모일 거임
+  * 왼쪽 애는 피봇보다 크거나 같은 거, 오른쪽 애는 피봇보다 작은 거 찾으면서 인덱스가 가운데로 모이다가 서로 하나씩 찾으면 걔네들 자리 교환을 해줄 거임(서로 작은 거 / 큰 거 가져야 하니까 아닌 거 찾으면 트레이드를 한다는 말)
+    * 물론 한 쪽이 못 찾을 수 있다 그러면 나머지 한 쪽이 그냥 계속 오른쪽/왼쪽으로 움직이면서 가장 끝으로 가서 탐색 끝내면 됨 피봇이 막... 못 넘을 인덱스 요런 거 아님
+  * 탐색이 끝나면 L, R이 만난 곳과 피봇을 슥삭 자리 바꿈해준다
+  * 그러면 피봇이 박힌 자리의 왼쪽에는 피봇에게 작은 거만, 오른쪽에는 피봇보다 큰 거만 남게 되고 피봇은 자리가 박히게 됨
+
+```python
+# 굳이 스스로를 바꾸지 않고 다른 리스트를 동원하자면
+
+def quick_sort(array):
+    N = len(array)
+    if N <= 1:  # 쪼개고 쪼개고 쪼개서 한 개 남으면 return
+        return array
+
+    mid = N // 2  # 우리는 가운데를 피봇으로 잡을 거임
+    lefts = []  # 피봇을 기준으로 왼쪽 오른쪽을 나누고
+    rights = []
+    rest = array[:mid] + array[mid+1:]  # 피봇 뺀 나머지 배열
+
+    for n in rest:  # 피봇 아닌 것들이
+        if n > array[mid]:  # 피봇보다 크면/작으면 각자 칸에 들어감
+            rights.append(n)
+        else:
+            lefts.append(n)
+
+    sorted_left = quick_sort(lefts)  # 나머지 양 옆에 대해서도 똑같은 행위를 반복
+    sorted_right = quick_sort(rights)
+    return sorted_left + [array[mid]] + sorted_right
+
+
+numbers = [6, 1, 3, 2, 5, 4]
+
+print(quick_sort(numbers))
+
+```
+
+* 퀵 정렬 최악의 시간 복잡도는 걍 정렬만큼 후진데 '평균적'으로는 빠르기 때문에 쓴다
