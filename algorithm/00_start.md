@@ -1,4 +1,4 @@
-# 01 뭐부터 공부해야 하지?
+# 00 뭐부터 공부해야 하지?
 
 배우긴 하는데 어디서부터 무엇이 알고리즘인지 모르겠다
 
@@ -30,15 +30,14 @@
 
   ```python
   for tc in range(1, T+1):
-      N = int(input())
-      answer = spiral(N)
+      answer = func(N)
       print(f"#{tc}")
       for n in answer:
           print(*n)
   ```
-
   
-
+  
+  
 * 0 두르는 법
 
   ```python
