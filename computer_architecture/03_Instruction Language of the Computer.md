@@ -109,14 +109,16 @@
   * g = h + A[8]이 있다고 하자. 여기서 A는 int array이다.
   * g, h는 $s1, $s2에 들어가고 base address(A[0]의 주소)도 $s3에 들어간다
   * 그러고 나서 lw라는 개념이 나오는데 load word라고... 뭐라 해야 하지? 일단 설명을 하면
-    : $s3에 base address에서 여덟 번째 후라는 거잖아 그러면 1~8까지 가기 위해서 8*4byte(왜냐면 하나하나가 word 단위로 align되어 있으니까)번 가야 함 그래서 $s3에 32를 더한 게 $t0에 들어가게 된다 이 '$s3 + 32'를 offset이라 부름
+    : $s3에 base address에서 여덟 번째 후라는 거잖아 그러면 1~8까지 가기 위해서 8*4byte(왜냐면 하나하나가 word 단위로 align되어 있으니까)번 가야 함 그래서 $s3에 32를 더한 게 $t0에 들어가게 된다 이 '$s3 + 32'를 offset이라 부름 긍께 가야할 곳까지의 거리... (아니면 점프해야하는 instruction까지의 거리 등등 일단 거리라는 거)
+    메모리 -> 레지스터로 보낸다는 게 lw고 그 거리가 offset
     결론적으로 lw = base address + offset
+    형식은 `lw 도착지 offset(base)` ex) `lw $s3, 1($0)` $0 주소+1한 곳에 있는 데이터를 $3에 넣기
   * 그러고 뭐... $s1에 $t0 + offset 넣으면 끝
-
+  
 * example 2
   * A[12] = h + A[8]
   * h를 $s2, A의 base address를 $s3에 놓고 lw랑 h + offset 까지 하는 건 같다
-  * 그러고 나서 A[12]에 저걸 store를 또 해야 함: 이게 sw(store word)
+  * 그러고 나서 A[12]에 저걸 store를 또 해야 함: 이게 sw(store word, register -> memory)
     A[12]에 접근하기 위해서 4*12 = 48을 $s3에 더해야 하는 거임 그 메모리 주소에다가 $t0을 넣으면 됨 이게 sw
 
 
