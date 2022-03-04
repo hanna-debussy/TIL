@@ -255,3 +255,65 @@ def greeting(request):
 ```
 
 그러면 자식 페이지 띄우면 parents template 밑에 저 hello~ 나옴
+
+
+
+## urls.py
+
+### urlpatterns
+
+app 내에 urls.py를 만들고 아예 거기서 url과 함수를 조정하는 게 일반적
+: 그 때 쓰는 게 include()
+
+name은 나중에 templates에서 url 적을 때마다 주소 적기 귀찮아서 이름을 붙여준다
+
+```python
+from django.urls import path, include
+
+urlpatterns: [
+    path("example/", view.example, name = "exmaple")
+]
+```
+
+
+
+## Namespace
+
+다른 앱 내의 같은 이름을 가진 url name을 구분하기 위해 이름공간을 설정하는 것
+
+
+
+### templates
+
+왜냐하면 templates 같은 경우는 앱 내 폴더가 따로 있더라도 읽을 때 templates들을 다 모아서 하나의 경로(폴더라 생각하면 쉽다)에서 보기 때문에 이름이 같으면 무조건 settings.py 에서 INSTALLED_APPS 에 적힌 순서가 더 앞인 이름에서 슥삭 가져감
+
+=> 그래서 templates 폴더 안에 다시 해당 앱 이름을 가진 폴더를 또 만들어주면 해결이 가능
+
+대신 view에서 함수 render에 "example/index.html" 하고 경로를 붙여줘야겠지
+
+
+
+### app name
+
+urls.py에서 app_name도 붙여준다 그러면 html 어디 가서 적을 때 {% url "appname:pathname " %} 형태로 적어주면 됨 앱은 다른데 path가 이름이 같을 때 얘도 path 이름만 보고는 제일 처음 적힌 순서대로 걍 잡아가기 때문에 그걸 막아줌
+
+```python
+from django.urls import path, include
+
+app_name = "example"  # 쨘
+urlpatterns: [
+    path("example/", view.example, name = "exmaple")
+]
+```
+
+
+
+## Base Templates
+
+### base.html
+
+만약 앱은 달라도 헤더랑 푸터를 동일하게 만들고 싶다면? 헤더 푸터 html을 모든 앱에 넣어둬야 할까?
+오,,, 누가 봐도 개발자가 싫어하게 생긴 방법이다
+
+=> 루트 폴더에 templates를 만들어두고 거기에 정말 base html들을 넣어두면 된다! 대신 또 등록해줘야 함
+: settings.py 내 TEMPLATES 보면 'DIRS'가 비어있다 거기에 [BASE_DIR / "templates",] 넣어주면 됨 뭔 말이냐면 너 templates 훑을 때 여기 폴더도 봐달라고 추가적으로 신청을 걸어두는 거
