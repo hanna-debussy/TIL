@@ -48,6 +48,8 @@
 
 ## Model로 돌아오자면
 
+### At first... setting
+
 우리는 모델을 클래스로 만들 겁니다 왜냐면 행동까지 지정해둘 수 있기 때문
 
 ```bash
@@ -86,11 +88,20 @@ $ python manage.py migrate appName
 
 그리고 확장 프로그램에 sqlite viewer 깔아서 자료를 한번 봐보자고 저거 깔면 db.sqlite3 파일 볼 수 있음 깔끔한 테이블이쥬?
 
+
+
+### Create
+
 고러고? 데이터를 넣어보자고
 
 ```bash
 $ python manage.py shell_plus
 # 이게 django_extensions 기능
+$ s1 = Student()
+$ s1.name = "김도영"
+$ s1.age = 27
+# 등등
+$ s1.save()
 ```
 
 우와 그러고 Student 써서 class 들어가고 s1 = Student() 해서 객체 하나 만들어보자
@@ -107,6 +118,13 @@ $ s3 = Student(name="Jay", age=26, major="business")
 
 
 
+자료형이 안 맞게 들어갔다면? 그니까 col은 4갠데 두 개만 넣고 save를 시도했다면?
+
+* `CharField`는 default가 이미 내장되어 있다: `""`
+* 다른 `IntegerField`는 default가 없어서 설정하지 않으면 에러가 난다
+
+
+
 한편 class들에게는 비서가 딸려있는데 얘 이름이 manage 아니고 objects라고 한다
 그래서 bash에 `Student.objects.create(name="Jay", age=26, major="business")` 하면 save 없이 바로 연결을 시켜줌 objects가
 또 `$ s4 = Student.objects.get(pk=1)` 해두면? s4에 1번 객체가 저장되는 거임
@@ -116,6 +134,22 @@ $ s3 = Student(name="Jay", age=26, major="business")
 **파이썬을 통해 우리가 SQL에 마음대로 접근할 수 있다는 거**
 
 
+
+### Read
+
+```bash
+# 전체 목록 조회
+$ modelName.objects.all()
+# 얘는 queryset을 return한다
+
+# 단일 조회
+$ modelName.objects.get(pk=n)
+# 얘는 object 하나를 return
+```
+
+
+
+### Update
 
 자 이제 col을 추가하려고 적기만 하면? not반영 yet 그래서 뭐 대충 `is_married = models.BooleanField` 을 적고 다시 추가하려고 `$ python manage.py makemigrations appName` 하면?
 뭔가 구구절절하게 나와 umm 이상하다;
@@ -128,6 +162,75 @@ $ s3 = Student(name="Jay", age=26, major="business")
 is_married = models.BooleanField (default=False)
 # 해서 default값을 우리가 저장해주자
 ```
+
+```bash
+$ python manage.py makemigrations appName
+# 이렇게 하면 No changes 나오거든? 그러면 아 필요없군 하면 됨 일단 model 수정하면 make웅앵 해바
+```
+
+
+
+아니면 자료를 수정하고 싶다면?
+일단 조회를 하고 &rarr; 수정을 해야겠지
+
+```bash
+$ s4= Student.objects.get(pk=4)
+$ s4.is_married = True
+$ s4.major = "통계학"
+$ s4.save()
+```
+
+
+
+### Delete
+
+```bash
+$ s4= Student.objects.get(pk=4)
+$ s4.delete()
+# 하면 SQL(in 하드디스크)에서 삭제되는데... 우리가 파이썬에서 보는 건 메모리에 있는 거라 남아있는 것처럼 보인다
+# 부르면 나옴
+```
+
+근데 하나를 슥삭했다 쳐 그러면 그 다음 애의 pk는...? 슥삭된 그 pk가 아닌 그 다음 pk가 된다 그러니까 1 2 3 4개였는데 4를 지우고 하나 다시 추가한다면 1 2 3 5 가 된다는 말
+
+
+
+## Createsuperuser
+
+```bash
+$ python manage.py createsuperuser
+```
+
+username 뭐 등등 쓰라는데 이메일은 안 써도 되고 비번은 써도 화면에 보이지는 않아 그냥 두 번 같이 쓰고 엔터하면 짠 하고
+
+그러고 runserver 해서 http://127.0.0.1:8000/admin/ 가면 username이랑 비번 쓰라고 하지 그거 아까 그거 치고 들어가면 나와 멋있지
+
+
+
+그리고 앱 안에 admin.py 들어가서 우리가 만든 모델을 등록하면 짠 
+
+```python
+import imp
+from django.contrib import admin
+from .models import Student, Article
+
+# Register your models here.
+admin.site.register(Student)
+
+admin.site.register(Article)
+```
+
+
+
+
+
+## Database API
+
+이제... createsuperuser랑 우리 url이랑 연동을 시켜서 웅앵해볼 거야
+
+1. 일단 앱을 맹근다
+
+
 
 
 
