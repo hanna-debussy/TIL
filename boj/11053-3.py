@@ -17,7 +17,7 @@ def lis(arr):
     그러므로 증가수열의 가장 첫 수를 세팅해주는 게 첫 for문이다
     """
     for i in range(len(arr)):
-        # 처움 수 i에서부터 만든 증가수열을 넣을 곳
+        # 처음 수 i에서부터 만든 증가수열을 넣을 곳
         next = []
         for j in range(i+1, len(arr)):
             if arr[i] < arr[j]:
