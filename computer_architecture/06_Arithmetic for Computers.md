@@ -97,3 +97,145 @@
 이거는? 불가
 나누기는 병렬이 불가하다 왜냐면 한 번 빼 봤을때 음수니 양수니에 따라 다음 연산이 달라지기 때문 (conditional)
 
+
+
+## Floating Point
+
+컴퓨터에서 어떻게 플로팅 포인트 넘버를 인식하고 처리하냐?
+
+* Floating point: 정수가 아닌 숫자덜 including very small and very large numbers
+* normalized scientific notation
+  : 그... 3.24 * 10*\*3 이런 표기 있잖아 이런 거 말하는데 뒤의 10의 n승(n을 exponent라고 함) 말고 앞의 숫자를 significand라고 하는데 얘가 소수점 위 1의 자리만 있어야 normalized라고 할 수 있다
+  한편 2진수에서는 significand의 소수점 위가 0이 아니어야 하는데 0과 1 뿐이므로 앞의 숫자가 항상 쁠마 1.xxxxx가 된다 1.xxxx \* 2**n 의 모습
+
+
+
+### IEEE Floating-point Format
+
+원래 회사마다 실수를 표현하는 방법이 다 달랐는데IEEE에서 754-1985라는 표준을 만들었다 거기에 따르면 single(float)은 32비트, double은 64비트로 표현된다
+
+그리고 그 비트는 세 영역으로 나뉘는데
+
+1. S
+   : sign bit, 0이면 0과 양수, 1이면 음수
+   &rarr; 왜냐면 (-1)에 이 S를 지수로 올려주게 돼서 -1**0 은 1, -1\*\*1은 -1 이렇게 가는 거
+2. Exponent
+   : single은 8비트, double은 11비트 / bias는 single이 127, double이 1023
+   지수... 2의 지수인데 다만 여기서 저장하는 건 실제 지수에다가 bias라는 걸 더한 값을 저장한다 아 아아 왜냐면 0과 1 뿐이니까 음수인 지수를 저장할 수 없잖아!!! 그래서 그거 표현하려고 하는 거
+   single로 예를 들면 00000000부터 11111111을 저장할 수 있는데 가장 작은 value는 00000001이겠고 얘는 1-127 해서 -126승을 표현 가능하게 됨 반면 가장 큰 value는 11111110이고 254-127 = 127승을 표현하게 되는 것두와리
+3. Fraction
+   : single은 23비트, double은 52비트
+   얘가 뭐냐면 significand의 소수점을 말한다 그러니까 significand - 1이라고 할 수 있지 (2진수니까)
+   오 얘만 저장하는 이유는 2진수에서는 항상 1의 자리가 1이기 때문에 굳이 저장하지 않겠다는 것 오
+
+그래서 저렇게 표현을 하면 single은 대략 10진수 기준 소수점 여섯 자리까지 표현할 수 있고(정확하고) double은 소수점 16자리까지 표현이 가능
+
+
+
+### Example
+
+-0.75를 표현해보자
+
+1. 일단 음수니까 S는 1
+2. fraction은 0.75 = 0.5 + 0.25 = 2**\-1 + 2\*\*-2 = 0.11(2진수) 가 된다
+   끈데? significand는 1의 자리가 무조건 1이어야 하니까 1.1 \* 2\*\*-1이 되겠고 fraction은 0.1
+3. exponent는 -1승이 찐이고 우리가 저장할 거는 127 더해야 하니까 -1 + 127 = 126이 저장된다
+
+
+
+### Addition
+
+더해보자고
+
+#### decimal
+
+원래 10진수로 표현하자면
+
+1. 일단 exponent를 맞춰주고
+2. 그 다음 바뀐 significand를 더해주고
+3. 만약 10의 자리 이상을 넘어갈 만큼 커졌으면 다시 fraction 조정해서 normalized 해줌
+4. 거기에 마지막으로 만약에 원래 더하던 두 개 숫자가 소수점 이하 세 자리, 그니까 4-digit 이었다면 얘도 fraction이 막... 소수점 네 자리라 해도 그거 반올림해서 세 자리로 같이 맞춰줘야 한다 아 물론 여기서도 예를 들어 9.99를 반올림하면 10.00이 되니까 renormalized해주는 절차가 필요방스
+
+
+
+#### binary
+
+방법 당연히 같음 지수 맞춰서 significand끼리 더해주고 normalized 해주고 round랑 renormalized 필요하면 해주고
+
+
+
+#### Floating-Point Adder Hardware
+
+걍 정수 계산보다 훨씬 복잡하기 때문에 한 클럭사이클에서 해내려면 너무 오래 걸린다
+그래서 보통 여러 사이클에 걸쳐서 하게 됨 &rarr; 그래서 pipeline 형식을 취하게 된다 (4장에 나온대)
+
+
+
+### Multiplication
+
+1. 지수를 더해야겠지 곱하기니까
+2. 그다음 significand끼리 곱하고
+3. 10의 자리(2의 자리) 이상 넘어가면 normalize하고
+4. 만약 또 조정해야하면 round랑 renormalized하고
+5. 그리고 Sign도 필요하면 고려해야 한다
+
+
+
+### FP Arithmetic Hardware
+
+multiplier의 복잡도는 adder보다 더하다 significand를 곱해야하기 때문
+보통 사칙연산, 역수, 제곱근을 구해주는 걸 제공해주고 fp랑 integer 변환도 지원한다
+마찬가지로 여러 사이클이 걸리지만 다 파이프라인화 시킨다
+
+
+
+### FP Instruction in MIPS
+
+* 보통 FP HW는 보충... 보조적인 프로세서(coprocessor)로 나옴 ISA extension 격
+* 아하 그래서 FP를 위한 레지스터가 따로 존재하게 됨: 32개의 32비트 레지스터 $f0 ~ $f31 (아하 double은 두개 붙여서 64비트를 만드네 $f0과 $f1이 한 쌍, 그 다음 2와 3이 한 쌍 이런 식, 대표는 앞에 오는 거)
+  아 근데? MIPS 2 버전에서는 그냥 64비트짜리 레지스터가 걍 따로 또 32개 지원하게 됨
+* 그리고 이 레지스터들은 정수에서는 안 먹힘 호환되는 게 아니고 오로지 플로팅에서만 동작
+  왜냐하면 명령어 길이 굳이굳이 늘일 필요가 없기 때문
+* load: single - `lwcl`, double - `ldcl`
+  store: single - `swcl`, double - `sdcl`
+
+
+
+### Accurate Arithmetic
+
+* 아 그 반올림 방식을 우리가 정할 수 있어서 그걸로 정확도를 더 정밀하게 올릴 수 있다
+* 그리고 모든 프로그램들이 이... Std 754-1985 이거를 따르는 게 아니라서 중요한 부분은 대부분 따르지만 모든 implement나 options들이 탑재되어 있는 건 아니다 왜냐면 다 탑재하면 복잡도는 올라가고 비싸지니까 대신 안 탑재된 거면 안 돌아갈 수 있겠지 그래서 잘 실어야 한다는 말씀
+
+
+
+## Parallelism and Computer Arithmetic: Subword Parallelism
+
+그... 보통 그래픽이나 오디오가 8비트나 16비트 쓰잖아 근데 예를 들어 내가 128비트짜리 adder를 써 그러면 8비트\*16개 나 16비트\*8개 써서 동시 연산 되게 내가... 그렇게 성능 향상을 하겠지? 
+
+이런 걸 data-level paralleism, 혹은 vector parallelism, 제일 자주 쓰는 말은 Single Instruction, Multiple Data 해서 SIMD라고 한다
+
+
+
+## Fallacies and Pitfalls
+
+### Right Shift and Division
+
+우리가... 곱하기 할 때 a를 b번 곱한다고 하면 그 a가 한 자리수씩 올라가면서 더해지잖아 그러니까 2\*\*n승씩 올라가는 거고 그거는 n번 left shift해서 더하게 된다
+
+&rarr; 그렇다면... right shift하면 나눠져? 라는 의문이 생긴다는 것
+
+근데 그거는 unsigned integer에 한해서만 가넝한
+
+
+
+### Associativity
+
+parallel program들은 더하기 순서에 따라 결과가 달라질 수 있음 아 좟나 큰 수랑 있으면 좟나 작은 수가 무시될 수 있군 그래서 큰 수끼리 먼저 더하고 작은 수를 나중에 더해주삼요
+
+
+
+### Who Care About FP Accuracy?
+
+ㅋㅋㅋㅋㅋㅋㅋ 사실 일반 사람들은 크게... 신경쓰지 않음 내 계좌에 0.00003원씩 나간다 해서 쉬익쉬익 이러진 않을 거 아님 근데? 이게 한 나라 국민들에게 모두 적용된다면? 전 세계는? 뭔가... scientific code에서는 중요해진다는 뜻
+
+그리고 Intel Pentium Floting point DIVision(FDIV) bug가 있었음...
