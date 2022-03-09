@@ -226,13 +226,78 @@ admin.site.register(Article)
 
 ## Database API
 
-이제... createsuperuser랑 우리 url이랑 연동을 시켜서 웅앵해볼 거야
+이제... createsuperuser랑 우리 url이랑 연동을 시켜서 웅앵해볼 거야 처음부터 해보자고
 
 1. 일단 앱을 맹근다
 
+2. settings 등록이랑 앱 내 urls.py 만들고 본체 urls.py에 include 걸어주고
 
+3. 그러고? models.py에 간다 거기서 class 형태로 모델을 만들어줘 내용은 스키마지
 
+4. 그 다음 이 모델을 makemigrations migrate로 저장하고 
 
+5. admin.py에 가서 이 모델을 우리가 createsuperuser에서 쓸 수 있게 등록해준다
 
+6. 앱 내 urls.py에 꼭!!! 해당 폴더 내 views import해줘야 함 그리고 urlpatterns에 path 등록... 해주는데 views 이름 가제로 정하고 저장하지 말고!!! views.py로 가야 돼 알지 오류난다
 
+   ```python
+   from . import views
+   
+   urlpatterns = [
+       path("list/", views.list, name="list"),
+       path("details/<int:article_pk>", views.details, name="details"),
+   ]
+   ```
 
+   
+
+7. 거기서 view 함수 만드는데 이제 우리는 여기서 모델에서 정보를 가져올 수가 있음 멋있지 물론 가져오려면 .models에서 모델 클래스명 가져와야 함
+   create웅앵으로 인해 생긴 admin 페이지에서 내가 해당 앱 해당 모델 안에서 쓴 글들이 나올 거임 내용은 db.sqlite3에서 확인 가능
+
+   ```python
+   from .models import Exercise
+   
+   # Create your views here.
+   def list(request):
+       lists = Exercise.objects.all()
+   
+       context = {
+           "lists": lists
+       }
+       return render(request, "myapp/list.html", context)
+   
+   
+   def details(request, article_pk):
+       main = Exercise.objects.get(pk=article_pk)
+   
+       context = {
+           "main": main,
+       }
+       return render(request, "myapp/details.html", context)
+   ```
+
+   
+
+8. 그러고 view.py 저장 urls.py 저장
+
+9. 이제 페이지 만들러 가보자고 그냥 {{ }} 여기에 넣어두면 나온다
+
+   ```python
+   <h1>LIST</h1>
+   <ul>
+       {% for list in lists %}
+           <li>
+               <a href="{% url 'myapp:details' list.pk%}">{{ list.head }}</a>
+           </li>
+       {% endfor %}
+   </ul>
+   ```
+
+   ```python
+       <h1>DETAIL</h1>
+       <h2>{{ main.head }}</h2>
+       <small>{{ main.created_at }} {{ main.updated_at }}</small>
+       <p>{{ main.para }}</p>
+   ```
+
+   
