@@ -271,7 +271,8 @@ name은 나중에 templates에서 url 적을 때마다 주소 적기 귀찮아�
 from django.urls import path, include
 
 urlpatterns: [
-    path("example/", views.example, name = "exmaple")
+    path("example/", views.example, name = "exmaple"),
+    path('articles/', include('articles/urls')),
 ]
 ```
 
