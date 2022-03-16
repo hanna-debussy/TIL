@@ -1,6 +1,8 @@
 # Django
 
-## Board
+## Board - CRUD
+
+Create, Read, Update, Delete
 
 ### 뭘 만들 거냐
 
@@ -209,3 +211,26 @@ def delete(request, pk):
 
 * 여기서도 redirect... 기릿
 * 여기는 따로 html이 없다 당연함 그냥 처리하면 됨 그리고 일종의 얘의 html이 list.html이 되는 것
+
+
+
+### Develop
+
+#### 내림차순으로 list를 가져오기
+
+```python
+def list(request):
+    # 원래라면 lists = Article.objects.all()
+    # BUT... id를 내림차순으로 해야 최신순으로 나오지 않을까? (DB에서 조작하는 것)
+    lists = Article.objects.order_by("-pk")
+    # 물론 pythonic하게 쓸 수도 있다 이건 DB에서가 아니라 여기서 행하는 것
+    # 즉 memory에서 뒤집는 건데 이건 좀 오래 걸림
+    # 하지만 간지가 안 난달까
+    # lists = Article.objects.all()[::-1]
+
+    context = {
+        "lists": lists,
+    }
+    return render(request, "articles/list.html", context)
+```
+
