@@ -156,9 +156,9 @@ child2 = [0]*(V+1)
 for i in range(E):
     parent, child = array[i*2], array[i*2+1]  # 두 개씩 끊어서 가져오기
     if child1[parent] == 0:  # 아직 parent의 idx에 해당하는 첫째자식이 비었다면
-        child1[parent] = son  # 첫째 자식에
+        child1[parent] = child  # 첫째 자식에
     else:
-        child2[parent] = son  # 첫째 자식이 차있다면 둘째 자식에
+        child2[parent] = child  # 첫째 자식이 차있다면 둘째 자식에
 ```
 
 ```python
@@ -224,11 +224,11 @@ def max_heap(n):
     tree[last_ver] = n
     # 여기까지 still 완전이진트리
     
-    child = last  # 새로 추가된 정점을 자식으로
+    child = last_ver  # 새로 추가된 정점을 자식으로
     parent = child // 2
     
     # 부모가 있고 + 자식의 키값이 부모보다 더 크면
-    while p >= 1 and tree[parent] < tree[child]:
+    while parent >= 1 and tree[parent] < tree[child]:
         tree[parent], tree[child] = tree[child], tree[parent]
         child = parent
         parent = child // 2
