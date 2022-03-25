@@ -1,0 +1,13 @@
+$ pip freeze > requirement.txt
+$ git add . && git commit -m 'init project'
+$ git install -r requirement.txt 헐 오
+
+$ git switch -c 장한나
+$ python manage.py startapp bbb
+$ git add .
+$ git commit -m 'startapp bbb'
+$ git push origin 장한나
+
+
+
+
