@@ -1,0 +1,63 @@
+from sys import stdin
+from collections import deque
+
+N = int(input())
+matrix = [list(map(int, input().split())) for _ in range(N)]
+
+# 최대 높이 구하기
+max_height = 0
+for i in range(N):
+    if max(matrix[i]) > max_height:
+        max_height = max(matrix[i])
+
+dxs = [-1, 0, 1, 0]
+dys = [0, 1, 0, -1]
+
+max_count = 0
+
+for height in range(max_height+1):
+    # 높이에 따른 초기 세팅
+    row, col = 0, 0
+    count = 0
+    visited = [[0] * N for _ in range(N)]
+
+    while row < N and col < N:
+        # 물에 잠기거나 이미 간 곳이라면 visited 표시 + 좌표만 옮기고 패스
+        if matrix[row][col] <= height or visited[row][col] == 1:
+            if col == N-1:
+                visited[row][col] = 1
+                row += 1
+                col = 0
+            else:
+                visited[row][col] = 1
+                col += 1
+        # 안 잠기고 가지 않은 곳이면
+        else:
+            deq = deque()
+            deq.append([row, col])
+            while deq:
+                now_row, now_col = deq.popleft()
+                visited[now_row][now_col] = 1
+                for n in range(4):
+                    new_row = now_row + dxs[n]
+                    new_col = now_col + dys[n]
+                    # 새로운 곳 + 범위 내
+                    if 0 <= new_row < N and 0 <= new_col < N and visited[new_row][new_col] == 0:
+                        if matrix[new_row][new_col] > height:
+                            visited[new_row][new_col] = 1
+                            deq.append([new_row, new_col])
+            # 한 덩이가 끝났으므로 count 올려주기
+            count += 1
+            # 좌표 옮겨주기
+            if col == N-1:
+                visited[row][col] = 1
+                row += 1
+                col = 0
+            else:
+                visited[row][col] = 1
+                col += 1
+    # 높이 하나가 끝날 때 count 정리
+    if count > max_count:
+        max_count = count
+
+print(max_count)
