@@ -83,9 +83,63 @@ b랑 e를 불러와서 a 하고 b랑 f 불러와서 c 하면 b로드-e로드-연
 
 ## Pipelined Datapath and Control
 
+stages 사이사이에 pipeline register가 필요하다 곧 네 개가 필요하다는 말씀
+그리고 그 register에는 다음에 필요한 데이터들을 저장해둔다
 
 
 
+### Pipeline Operations
+
+cycle-by-cycle flow... 그림을 그릴 때 보통 두 가지로 그리는데 특정한 한 사이클의 파이프라인 상태를 보여주는 single-clock-cycle diagram이랑 여러 사이클에 걸쳐서 어떻게 실행되고 있는지를 보여주는 multi-clock-cycle diagram 특히 load/store를 볼 때 ㅇㅇ
+
+그 중 후자를 보자
+
+#### Load
+
+1. IF 단계: pc + 4랑 fetch된 instruction이 pipeline register에 저장
+2. ID 단계: 명령어를 통해 register에 access하고 하위 16비트가 32비트로 바뀜 그리고 pc+4 그대로 가져가고
+3. EX 단계: 메모리 계산한 거 pipeline register에 들어가고
+4. MEM 단계: 실제 데이터 메모리에 aceess하고 거기서 읽은 것들을 pipeline register에 들어가고 
+5. WB: 그 MEM pipeline register에 있던 걸 register에 들어가게 됨
+
+근데... 원래 target register는 ID 단계에서 정해지는데 실제 데이터가 쓰여지는 건 WB단계이기 때문에 실행된 load 명령어가 WB에 가 있다는 말은 ID에는 엉뚱한 게 있다는 말... 그 엉뚱한 명령어에 의해 target register가 결정되고 쓰여져야 할 값이 엉뚱한 곳에 저장된다는 말
+&rarr; 그래서 ID 단계의 target register를 pipeline register에 저장해서 게속 보내줘야 함
 
 
 
+#### Store
+
+1. EX 단계: Load 와 같다
+2. MEM 단계: ID단계에서의 데이터를 데이터 메모리에 쓴다
+3. WB 단계: store는 아무 일도 하지 않음
+
+
+
+#### 그래서 multi-clock-cycle diagram은...
+
+![img](https://i.stack.imgur.com/XnKKi.png)
+
+이렇게 그리게 된다. 아니면 그냥 stage 단계를 적어두기도 한다.
+
+
+
+#### Single-clock-cycle pipeline diagram
+
+![img](https://media.vlpt.us/images/slchoi/post/906162a7-fead-4ca1-ba80-b7e9e4943c8d/image.png)
+
+좀 흐릿하긴 한데 여튼 저 위에 각 단계에서 지금 어떤 게 실행되고 있는지 보여주는 거 한 마디로 이거 여러개 붙여둔 게 multi라고 보면 된다
+보면 하나의 cycle에서 다섯 개의 명령어가 동시에 돌아가는 중이다.  pipeline의 단적인 모습... 이런 방법으로 성능을 향상시킨다. 
+
+
+
+### Pipelined Control
+
+![img](https://www.cise.ufl.edu/~mssz/CompOrg/Figure5.5-PipelineControl.
+
+control은 ID 단계에서 OPcode에 의해서 만들어지는데 이 control이 WB에 쓰일 거 MEM에 쓰일 거 EX에 쓰일 거 pipeline register를 통해 저장/전달 해주는 거
+
+이제 이걸 붙이면
+
+![img](https://blog.kakaocdn.net/dn/w8cLV/btq5uHoyvBh/nCeNYdG9eMM23k09QjLFWk/img.png)
+
+...으
