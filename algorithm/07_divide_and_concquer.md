@@ -32,10 +32,10 @@ def m_s(array):
     for y in middle~array[-1]:
         add x to right
     
-    merge(left)
-    merge(right)
+    ms_l = m_s(left)
+    ms_r = m_s(right)
     
-    return left+right
+    return merge(ms_l, ms_r)
 
 
 def merge(left, right):
@@ -75,7 +75,7 @@ def q_s(array, l, r):
 # Hoare-partition algorithm
 def partition(array, left, right):
     pivot = array[left]
-    i, j = left, rhght
+    i, j = left, right
     while i <= j:
         while i <= j and array[i] <= pivot:  # left에서는 작으면 그냥 넘김
             i += 1
@@ -101,11 +101,11 @@ def partition(array, left, right):
 ```python
 #Lomuto partition algorithm
 
-def partition(array, pivot, right):
-    x = array[r]  # 얘가 pivot이 된다
-    i = p - 1
+def partition(array, start, end):
+    x = array[end]  # 얘가 pivot이 된다
+    i = start - 1
     
-    for j in range(p, r):  # j는 r-1까지 쭉 가는데
+    for j in range(start, end-1):  # j는 r-1까지 쭉 가는데
         if array[j] <= x:  # pivot보다 작으면
             i += 1  # 한 칸 넘어가
             # 그리고 바꿔주...는데 이게 j랑 1 커진 i는 같은 자리라서 나랑 나를 바꾸는 셈
@@ -131,3 +131,9 @@ def partition(array, pivot, right):
 자료의 가운데에 있는 값과 비교하고 다음 검색의 위치를 결정 < 을 반복하다보면 검색 범위를 반반반으로 줄여나갈 수 있어서 빠르게 정렬이 가능하다
 
 이거는 머... 알지? 중간보다 작으면 end를 middle-1로 옮기고 중간보다 크면 start를 middle+1로 옮기는 거 rgrg
+
+
+
+
+
+근데 신기하다 여기서는 start end가 아니라 low high로 표기하네...

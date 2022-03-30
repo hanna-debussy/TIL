@@ -143,20 +143,28 @@ cycle5에서는 lw가 WB를 하고 and는 EX로, or는 ID로, add는 IF에서 �
 
 
 
-## control Hazard
+## Control Hazard
 
 ### Branch Hazard
 
-브랜치의 결과를 MEM에서 알게 되기 때문에 WB을 해 줘야 비로소 알 수 있음 그러므로 세 개의 cycle을 쉬어줘야 한다. 
+브랜치의 결과를 MEM에서 알게 되기 때문에 WB을 해 줘야 비로소 알 수 있음 그러므로 세 개의 cycle을 쉬어줘야 한다. fwd을 해서 MEM에서바로 슥삭한다 해도 두 cycle을 쉬어줘야 한다.
 
 그래서 우리가 ID stage에서 알 수 있도록 브랜치 결과를 알 수 있도록 target address adder랑 register comparator를 추가했다.
 &rarr; 근데? 이렇게 해도 적어도 한 개의 cycle은 쉬어줘야 한다.
 
 
 
+### Dynamic Branch Prediction
+
+최근 브랜치 값을 학습(?)하는... 저번에 잠깐 얘기했던 건데 
 
 
 
+
+
+
+
+## Exceptions
 
 
 
