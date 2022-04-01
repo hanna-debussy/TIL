@@ -34,20 +34,70 @@
 
 인접 행렬, 인접 리스트 방법이 있는데 으음~ 무슨 말인지 알겠어
 
-#### 인접 행렬
-
-* |V|*|V|짜리 2차원 배열로 한다
-* 
 
 
+## 그래프 순회(탐색)
+
+### DFS
+
+1. 스택 사용하기
+
+   ```python
+   # Template
+   
+   stack = []
+   visited = [False]*(vertex+1)
+   
+   def dfs(vertex):
+       stack.append(vertex)
+       visited[vertex] = True
+       
+       while stack:
+           menow = stack.pop()
+           # 방문해서 할 거 처리하고
+           
+           for adjacent in edges[menow]:
+               if visited[adjacent] is False:
+                   stack.append(adjacent)
+                   visited[menow] = True
+   ```
+
+   
+
+2. 재귀 사용하기
+
+   ```python
+   # Template
+   
+   def recursion(graph, vertex):
+       visited[vertex] = True
+       
+       for adjacent in edges[vertex]:
+           if visited[adjacent] is False:
+               recursion(graph, adjacent)
+               
+       # 만약 중복 경로를 허용한다면
+       visited[vertex] = False
+   ```
 
 
 
+### BFS
 
+큐!!!!!!!!!!!!!!!!!!!!!
 
+```python
+# Template
 
-
-
-
-
-
+def bfs(graph, vertex):
+    queue = []
+    queue.append(vertes)
+    visited[vertex] = True
+    
+    while queue:
+        front = queue.pop(0)
+        for adjacent in edges[front]:
+            if visited[adjacent] = False:
+                queue.append(adjacent)
+                visited[adjacent] = True
+```
