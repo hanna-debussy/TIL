@@ -91,7 +91,7 @@
 
 def bfs(graph, vertex):
     queue = []
-    queue.append(vertes)
+    queue.append(vertex)
     visited[vertex] = True
     
     while queue:

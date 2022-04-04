@@ -245,7 +245,7 @@ def del_heap():
     # 지우기
     temp = tree[1]  # 루트의 key
     tree[1] = tree[last_ver]  # 마지막 정점의 키를 루트에 복사
-	last_num -= 1
+	last_ver -= 1
     
     # 다시 최대힙 되게 재정렬
     parent = 1
