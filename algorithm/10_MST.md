@@ -55,6 +55,101 @@ def prim(graph, start):
 
 
 
+## Dijkstra 알고리즘
+
+가중치가 있는 트리에서 임의의 두 점을 잇는 최소 거리/비용... 등을 계산할 때 쓰인다. 위의 두 알고리즘과 다른 점은 저 둘은 거시적으로 봤을 때 '모든' 점을 잇는 최소 거리/비용을 구하는 것이기 때문에 그 트리에서 임의의 두 점을 뽑았을 때 그 둘 사이가 최소 거리/비용인 건 아니다!!
+
+
+
+```python
+import sys
+import heapq
+
+sys.stdin = open("input.txt")
+
+T = int(input())
+
+
+# heapq 없이 구현
+def dijkstra(start):
+    global distances, visited
+	
+    # 시작점 갱신
+    distances[start] = 0
+    visited[start] = True
+
+    # 일단 시작점으로부터 모든 인접점 이동거리 갱신
+    for ee, ww in graph[start]:
+        distances[ee] = ww
+
+    # 시작점을 제외하고 (N+1)-1개의 노드에 대해 고려
+    for _ in range(N):
+        now = 0
+        min_val = float("inf")
+        for i in range(1, N+1):
+            # 방문하지 않았고 시작점과 최단 거리인 노드를 now에 저장
+            if not visited[i] and distances[i] < min_val:
+                min_val = distances[i]
+                now = i
+		
+        # now에 방문 처리
+        visited[now] = True
+        # 그 now의 인접 노드들에 대해
+        for next_node, next_distance in graph[now]:
+            # now를 거쳐 인접 노드를 가는 방법 distance와
+            distance = distances[now] + next_distance
+            # 지금까지 다른 방법으로 거기 닿는 방법 중 최소거리가 저장되어있던 것을 비교
+            if distance < distances[next_node]:
+                distances[next_node] = distance
+
+    return
+
+
+# heapq 사용
+def hq_dijkstra(start):
+    hq = []
+    h_distances[start] = 0
+    heapq.heappush(hq, (h_distances[start], start))         # 처음부터 탐색
+
+    while hq:
+        # 탐색할 노드 now와 그 거리를 가져와서
+        now_distance, now = heapq.heappop(hq)
+        # 기존 거리보다 길면 고려할 필요 x
+        if h_distances[now] < now_distance:
+            continue
+
+        for next_node, next_distance in graph[now]:
+            distance = now_distance + next_distance
+            if distance < h_distances[next_node]:
+                h_distances[next_node] = distance
+                heapq.heappush(hq, (distance, next_node))
+
+    return h_distances
+
+
+for tc in range(1, T+1):
+    N, E = map(int, input().split())
+    graph = [[] for _ in range(N+1)]
+
+    for _ in range(E):
+        s, e, w = map(int, input().split())
+        graph[s].append([e, w])
+
+    visited = [False] * (N+1)
+    distances = [float("inf")] * (N+1)
+
+    h_visited = [False] * (N+1)
+    h_distances = [float("inf")] * (N+1)
+
+    dijkstra(0)                             # 0번부터
+    hq_dijkstra(0)
+
+    print(distances)
+    print(h_distances)
+
+    print(f"#{tc} {distances[x]}")          # 임의의 x번까지 (알아서 넣어)
+```
+
 
 
 
