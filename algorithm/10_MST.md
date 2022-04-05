@@ -53,6 +53,53 @@ def prim(graph, start):
    &rarr; 이때 사이클이 존재하면 패스하고 그 다음으로 가중치가 낮은 간선을 선택
 3. n-1개의 간선이 선택될 때까지 반복 수행
 
+find와 union이라는 함수를 만들어서 사용하기 때문에 find-union 알고리즘, 서로소집합 알고리즘이라고도 한대
+
+
+
+```python
+import sys
+
+
+# 경로의 대장(부모)이 누구냐
+def find(x):
+    while x != parent[x]:
+        x = parent[x]
+    return x
+
+
+# 지금 경로의 대장(부모) 찾기 (일종의 간선을 연결)
+def union(parent, a, b):
+    parent[find(b)] = find(a)
+
+
+def kruskal():
+    total = 0
+    for w, u, v in edges:
+        # u와 v가 서로 다른 집합에 속해있을 때 (같으면 사이클이 생겨서 트리 성립 불가)
+        if find_set(u) != find_set(v):
+            union(parent, u, v)
+            total += w
+    
+    return total
+
+
+# V: 정점 개수, E: 간선 개수
+V, E = map(int, input().split())
+edges = []
+
+for _ in range(E):
+    a, b, weight = map(int, input().split())
+    edges.append((weight, a, b))
+
+# 비용순으로 정렬을 해야 그리디가 가능
+edges.sort()
+
+parent = [i for i in range(V+1)]
+result = kruskal()
+print(result)
+```
+
 
 
 ## Dijkstra 알고리즘
