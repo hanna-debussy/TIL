@@ -22,23 +22,23 @@
 
 def prim(graph, start):
     MST = [False]*(N+1)				# MST 포함 여부(일종의 visited)
-    key = [float("inf")]*(N+1)		# 가중치 최대값 이상으로 초기화
+    mins = [float("inf")]*(N+1)		# 가중치 최대값 이상으로 초기화
     pi = [None]*(N+1)
-    key[start] = 0					# 시작정점의 가중치를 0으로 설정
+    mins[start] = 0					# 시작정점의 가중치를 0으로 설정
     
     for _ in range(N):				# 정점의 개수만큼			
         min_vetex = 0
         min_key = float("inf")
         
         for i in range(N):			# 방문하지 않은 정점들 중 최소 가중치 정점 찾기
-            if MST[i] is False and key[i] < min_vertex:
+            if MST[i] is False and mins[i] < min_vertex:
                	min_vertex = i
-                min_key = key[i]
+                min_key = mins[i]
         MST[min_vertex] = True		# 방문 처리
         
         for vertex, val in enumerate(graph[min_vertex]):
-            if MST[vertex] is False and val < key[veretx]:
-                key[vertex] = val				# 가중치 갱신
+            if MST[vertex] is False and val < mins[veretx]:
+                mins[vertex] = val				# 가중치 갱신
                 pi[vertex] = min_vertex			# 부모 정점 갱신
 ```
 
@@ -46,7 +46,7 @@ def prim(graph, start):
 
 ## Kruskal 알고리즘
 
-사이클이 생기지 않도록 n-1개의 간선을 선택하는 방식.kinda 그리디 알고리즘이구나... 간선을 선택해나가는 과정에 여러 개의 트리가 존재한다
+사이클이 생기지 않도록 n-1개의 간선을 선택하는 방식. kinda 그리디 알고리즘이구나... 간선을 선택해나가는 과정에 여러 개의 트리가 존재한다
 
 1. 모든 간선을 가중치에 따라 오름차순으로 정렬한다
 2. 가중치가 가장 낮은 간선부터 선택하면서 트리를 만든다
