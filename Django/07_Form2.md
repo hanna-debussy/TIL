@@ -19,8 +19,7 @@
 
 1. `require_http_methods`: 특정 요청 방법만 허용하도록 하는 데코레이터
 2. `require_POST`: POST 메소드만 허용하도록 하는 데코레이터
-3. `require_GET`: GET 메소드만 허용ㅇㅇ
-4. `require_safe`: '안전빵'... 보는 것 이외에는 작업을 수행하지 못 한다. 추가/수정 불가
+3. `require_safe`: GET 메소드만 허용
 
 
 
@@ -95,7 +94,7 @@ def delete(request, pk):
 ### 세팅
 
 ```bash
-$ pip install django-boogstrap-v5
+$ pip install django-bootstrap-v5
 ```
 
 ```python
