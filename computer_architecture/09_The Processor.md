@@ -147,36 +147,121 @@ cycle5에서는 lw가 WB를 하고 and는 EX로, or는 ID로, add는 IF에서 �
 
 ### Branch Hazard
 
-브랜치의 결과를 MEM에서 알게 되기 때문에 WB을 해 줘야 비로소 알 수 있음 그러므로 세 개의 cycle을 쉬어줘야 한다. fwd을 해서 MEM에서바로 슥삭한다 해도 두 cycle을 쉬어줘야 한다.
+브랜치의 결과를 MEM에서 알게 되기 때문에 WB을 해 줘야 비로소 알 수 있음 그러므로 세 개의 cycle을 쉬어줘야 한다. fwd을 해서 MEM에서 바로 슥삭한다 해도 두 cycle을 쉬어줘야 한다.
 
-그래서 우리가 ID stage에서 알 수 있도록 브랜치 결과를 알 수 있도록 target address adder랑 register comparator를 추가했다.
+그래서 우리가 ID stage에서 알게 해서 브랜치 결과를 알 수 있도록 target address adder랑 register comparator를 추가했다.
 &rarr; 근데? 이렇게 해도 적어도 한 개의 cycle은 쉬어줘야 한다.
 
 
 
 ### Dynamic Branch Prediction
 
-최근 브랜치 값을 학습(?)하는... 저번에 잠깐 얘기했던 건데 
+deeper and superscalar(나중에 배울 것) pipeline일수록 branch penalty가 더 중요해진다.
+이를 막기 위해 우리는 dynamic prediction을 사용하는 것
+
+추가하는 건 branch predictions buffer(a.k.a. branch history table)
+: 최근 사용한 결과값(taken or not taken)을 가지고 있는 버퍼/테이블
+
+이 테이블을 보고 값을 예측하고 실행한다
+만약 틀리면? 여태 한 거 무효화 시키고 올바르게 다시 실행하고, 더해서 branch prediction을 수정한다
 
 
 
+#### 1-bit predictor
 
+가장 최근 결과값 한 개만 들고 있는 거.
+아 근데 이중 loop일 때 곤란해진다. 비유를 하자면 for문이 하나 안에 또 하나를 가진 상태고 inner for문 안에 if가 있다고 치자 그러면 if문에서 taken이 나와도 outer for의 'inner for의 결과값이 taken이면 not taken이다...' 이렇게 해버리면 항상 앞의 결과값은 taken인데 not taken이 나와주니 에바고 또 outer for문이 또 돌면 not taken을 가지고 inner for문에 들어가니 not taken 뒤에 taken이 나와줘서 곤란하게 됨
+
+
+
+#### 2-bit predictor
+
+![enter image description here](https://i.stack.imgur.com/BfCk8.png)
+
+결과값이 두 개 저장되는 건데 잘 보면 두 번 이상 misprediction이 발생하면 예측값이 바뀌게 되어잇음
+
+이렇게 하면 위의 for문 두 개도 잘 예측할 수 있다. outer for문에서 한 번 not taken이 나온다 해도 아직까지 taken이라고 예측하는 거니까
+
+그리고 2bit이라서 뭐 메모리 늘어난다 해도 크게 영향을 미치지 않음
+
+
+
+### calculating the branch target
+
+predictor가 있다 하더라도 branch를 만날 때마다 target address를 계산해야 하는데 이것도! 미리 저장해두고 예측을 하자 이말이야
+
+**branch target buffer**
+target address를 캐시해두는 것... 그래서 명령어가 fetch될 대 branch의 명령어가 있을 program counter로 인덱싱이 되어서 같은 값이 예측되면 바로 target address를 아까 걸로 가져오는 거임
 
 
 
 ## Exceptions
 
+음 예외는 언제 발생하느냐? 컨트롤의 흐름을 바꾸는 'unexpected events'가 발생할 때겠지?
+
+1. Exception
+   : CPU 내부에서 발생한다. 
+   ex) undefined opcode, overflow, syscall
+
+2. Interrupt
+   : 외부 장치에 의해 발생
+3. Software Interrupt(a.k.a Trap)
+   : 명령어에 의해 interrupt가 발생
+
+이런 예외들은 성능을 떨어뜨리지 않고 처리하기가 매우 힘들다...
+
+### 그럼 어케 처리하니?
+
+MIPS에서는 System Control Coprocessor라는 곳에서 예외를 처리한다. 
+
+1. 일단 예외를 발생시킨 명령어(PC)를 Exception Program Counter(EPC)에 저장함
+2. 이 문제를 Cause Register라는 곳에 저장한다. (ex) 뫄뫄 문제면 0 솨솨 문제면 1 등등)
+3. handler가 있는 8000 00180으로 간다
+
+#### handler?
+
+##### Vectored Interrupt
+
+: 예외를 발생한 원인에 따라서 handler를 여러 개 등록하는 거다. 하나만 있으면 핸들러로 가서 그제야 어떤 문제인지 찾아야 한다. 하나일 때 처리 시간이 길어지고, vectored면 하드웨어가 받쳐줘야 하지만 그래도 바로 어떤 문제가 생겼는지 알 수 있다.
+
+그래서 vectored를 쓰면 각각 예외마다 주소가 있고 거기 가면 바로바로 예외를 처리하기도 하지만 실제 핸들러가 있는 곳으로 보내는 브랜치 명령어로 이어지기도 한다.
 
 
 
+##### handler 작동 방법
+
+1. 원인을 찾고 관련된 handler로 짬푸
+2. 필요한 액션 취하기
+3. 다시 일하기 / 아님 EPC로 돌아가서 다시 실행하기
+4. 회복이 되지 않으면 프로그램 종료 + EPC 가서 이 에러 났다고 repost 해주기
 
 
 
+### 근데? 이제 파이프라인이라면?
+
+파이프라인이라면 더 복잡해진다. 파이프라인에서의 예외는 대표적인 control hazard의 일종이다. 약간 mispredicted 한 상태와 같다.
+
+* 예외가 restartable하다면
+  파이프라인은 해당 명령어를 flush(무효화)하고 핸들러에서 처리한 다음 다시 명령어로 돌아와서 다시 refetch해준다.
+* PC가 EPC register에 저장되어 있잖아 근데 파이프라인에서는 PC가 처리된 순간 다음 명령어 받으려고 +4가 된다. 그러니 EPC에는 PC+4가 저장되는 거...  그래서 핸들러가 어떤 명령어를 실행해야하는지 그 값을 조정해줘야 한다.
 
 
 
+#### 여러 개의 명령어를 돌리는 그...
+
+##### multi exceptions가 발생할 수 있다!
+
+파이프라인에서 가장 빨리 실행된 예외 먼저 실행한다. 그 다음 모든 명령어를 flush 시키는 거지 이런 간단하고 예외가 딱 뭔지 알 수 있는 걸 precise exception이라고 한다.
+
+하지만? 복잡한 파이프라인이라면? 실제 실행이 순차적이 아니라 막... 뒤죽박죽으로 실행되는 것도 있는데 그런 걸 out-of-order completion이라고 한대 이런 복잡한 파이프라인이라면 precise exception이 어렵겠지 이런 걸 imprecise exceptions라고 한다.
 
 
 
+##### Imprecise Exceptions
 
+1. 일단 파이프라인을 멈추고 전체 상태를 저장한다.
+2. 핸들러가 동작 시작
+   * 어떤 명령어들이 예외를 가지고 있고
+   * 어떤 명령어들을 실행하거나 flush시킬지 결정
 
+하드웨어는 간단하지만 핸들러는 복잡해진다... 그래서 모든 예외를 imprecise로 돌리지는 않음
