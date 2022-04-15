@@ -149,7 +149,7 @@ from django.contrib.auth import get_user_model
 class CustomUserChangeForm(UserChangeForm):
     
     class Meta:
-        # get_user_model... 다음시간에 더 자세히 배워볼게요
+        
         model = get_user_model()  # User
         # 찾아보면 field 이름이 다 나와있음 외우는 거 아니고 찾아서 필요한 것만 보이게 넣기
         fields = ("email", "first_name", "last_name")
@@ -262,7 +262,7 @@ def change_password(request):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()  # 해주고
-            update_session_auth_hash(reqest user) # 인자에 넣어주기
+            update_session_auth_hash(reqest, user) # 인자에 넣어주기
             return redirect("article:index")
 
 ```
