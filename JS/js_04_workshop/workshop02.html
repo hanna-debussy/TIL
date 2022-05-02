@@ -25,27 +25,17 @@
     const badWords = ['바보', '멍청', '메롱',]
     const userInput = document.querySelector('#userInput')
     const output = document.querySelector('#output')
-
-
-    // const myTextInput = document.tquerySelector('#my-text-input')
-    // const myP = document.querySelecor('#my-paragraph')
-    
-    // myTextInput.addEventListener('input', function (event) {
-    //   // console.log(event.target.value)
-    //   myP.innerText = event.target.value
-    // })
-
-    
     
     const filterMessage = function (event) {
       // badWords에 포함된 단어가 입력될 경우, '**'으로 변환하여 output에 출력
-      var original = userInput.value
+      let filteredInput = event.target.value
+
+      badWords.forEach(function (badWord) {
+        filteredInput = filteredInput.replaceAll(badWord, "**")
+      })
+      // same as  
+      // badWords.forEach(badWord => filteredInput = filteredInput.replaceAll(badWord, "**"))
       
-      // var filteredInput = badWords.map(function(badword) {
-      //   original.replaceAll(badword, "**")
-      // })
-        
-      filteredInput = original.replaceAll(badWords[0], "**").replaceAll(badWords[1], "**").replaceAll(badWords[2], "**")
       output.innerText = filteredInput
     }
 
