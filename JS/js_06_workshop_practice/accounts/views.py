@@ -112,10 +112,23 @@ from django.http import JsonResponse
 @require_POST
 def follow(request, user_pk):
     # CODE HERE
+    User = get_user_model()
+    me = request.user
+    you = get_object_or_404(User, pk=user_pk)
+
+    if me != you:
+        if you.followers.filter(pk=me.pk).exists():
+            you.followers.remove(me)
+            is_following = False
+        else:
+            you.followers.add(me)
+            is_following = True
+
+    # follwersCount = User.objects.filter()
     dict_data = {
-        "isFollowing": True,
-        "followersCount": 10,
-        "followingsCount": 12,
+        "isFollowing": is_following,
+        "followersCount": you.followers.count(),
+        "followingsCount": you.followings.count(),
     }
     
     return JsonResponse(dict_data)

@@ -4,16 +4,20 @@
   <h1>{{ person.username }}의 프로필 페이지</h1>
   {% with followings=person.followings.all followers=person.followers.all %}
     <div>
-      <div>팔로잉 수 : {{ followings|length }} / 팔로워 수 : {{ followers|length }}</div>
+      <div>
+        팔로잉 수 : <span id="followingSpan">{{ followings|length }}</span>
+        /
+        팔로워 수 : <span id="followerSpan">{{ followers|length }}</span>
+      </div>
     </div>
     {% if user != person %}
       <div>
-        <form action="{% url 'accounts:follow' person.pk %}" method="POST">
+        <form id="followForm">
           {% csrf_token %}
           {% if user in followers %}
-            <input type="submit" value="언팔로우">
+            <input id="followBtn" type="submit" value="언팔로우">
           {% else %}
-            <input type="submit" value="팔로우">
+            <input id="followBtn" type="submit" value="팔로우">
           {% endif %}
         </form>
       </div>
@@ -54,18 +58,32 @@
   FOLLOW_URL로 POST 요청한다. => 좋아요가 db에 기록됨
   응답 JSON을 통해 화면을 갱신한다.
   {% endcomment %}
-  const FOLLOW_URL = "{% url 'accounts:follow' person.id %}"
+  // const FOLLOW_URL = "{% url 'accounts:follow' person.id %}"
+  const profileID = "{{ person.id }}"
+  const FOLLOW_URL = `/accounts/${profileID}/follow/`
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-  // FOLLOW_URL로 POST 요청한다. => 좋아요가 db에 기록됨
-  axios({
-    method: "POST",
-    url: FOLLOW_URL,
-    headers: { "X-CSRFToken": csrftoken }
-  })
-    .then(res => console.log(res.data))
-    .catch(err => console.error(err))
-
+  const followForm = document.querySelector('#followForm')
+  const followingSpan = document.querySelector("#followingSpan")
+  const followerSpan = document.querySelector("#followerSpan")
+  const followBtn = document.querySelector("#followBtn")
   
+
+  followForm.addEventListener("submit", function (event) {
+    event.preventDefault()
+    axios({
+      method: "POST",
+      url: FOLLOW_URL,
+      headers: { "X-CSRFToken": csrftoken }
+    })
+      .then(res => {
+        const { isFollowing, followersCount, followingCount } = res.data
+        followingSpan.innerText = followingCount
+        followerSpan.innerText = followersCount
+        followBtn.value = isFollowing ? "언팔로우" : "팔로우"
+      })
+      .catch(err => console.error(err))
+  })
+
 </script>
 {% endblock script %}
