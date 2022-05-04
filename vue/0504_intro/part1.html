@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .dark-mode {
+      background-color: darkslategray;
+      color: white;
+    }
+
+    .light-mode {
+      background-color: #fff;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>{{ h1Message }}</h1>
+
+    <!-- v-on:(eventName)="callBackFunc"
+    근데 너무 자주 쓰여서 @로 축약 가능하다 @click="blarblar" 이렇게 -->
+    <button v-on:click="switcheTheme">
+      {{ buttonMessage }}
+    </button>
+
+
+    <!-- v-bind를 하면 class 안을 해석해서 연산해줌
+    마찬가지로 v-bind 너무 자주 써서 그냥 :class= 라고 생략 가능함 -->
+    <div v-bind:class="dark ? 'dark-mode' : 'light-mode'">
+      <ul>
+        <li v-for="article in articles">
+          <strong>{{ article.title }}</strong>: {{ article.content }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script>
+
+    new Vue({
+      el: "#app",
+      data: {
+        dark: true,
+        articles: [
+        {id: 1, title: "A", content: "apple"},
+        {id: 2, title: "B", content: "banana"},
+        {id: 3, title: "C", content: "crap"},
+        ],
+      },
+
+      // 모오든 종류의 함수 작성하는 곳 (보통 콜백함수가 여기 들어간다)
+      methods: {
+        warning: function () {
+          alert("CONFIDENTIAL")
+        },
+        switcheTheme: function () {
+          // this.를 붙여줘야 데이터에 접근 가능
+          this.dark = !this.dark
+        },
+      },
+
+      // 데이터를 기반으로 자동 계산된 new 속성
+      // 최초 실행 때 한 번 실행되고, 그 다음엔 data가 갱신될 때마다 값을 도출
+      computed: {
+        // 근데!! 얘는 함수 아님 그냥 계산식으로 인해 나온 '값'임 데엠
+        buttonMessage: function() {
+          return this.dark ? "light" : "dark"
+        },
+        h1Message: function() {
+          return this.dark ? "DARK Mode" : "LIGHT Mode"
+        }
+      },
+    })
+  </script>
+</body>
+</html>

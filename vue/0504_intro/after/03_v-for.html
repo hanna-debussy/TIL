@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <h2>String</h2>
+      <div v-for="char in myStr">
+        {{ char }}
+      </div>
+    <h2>Array</h2>
+    <div v-for="fruit in fruits">
+      {{ fruit }}
+    </div>
+    <div v-for="(fruit, idx) in fruits">
+      {{ idx }} => {{ fruit }} 
+    </div>
+    <div v-for="todo in todos">
+      <p>{{ todo.title }} => {{ todo.completed }}</p>
+    </div>
+
+    <h2>Object</h2>
+    <div v-for="value in myObj">
+      {{ value }}
+    </div>
+    <div v-for="(value, key) in myObj">
+      {{ key }} => {{ value }}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        myStr: 'Hello World!',
+        fruits: ['apple', 'banana', 'coconut'],
+        todos: [
+          { id: 1, title: 'todo1', completed: true },
+          { id: 2, title: 'todo2', completed: false },
+          { id: 3, title: 'todo3', completed: true },
+        ],
+        myObj: {
+          name: 'kim',
+          age: 100,
+        }
+      }
+    }) 
+  </script>
+</body>
+</html>
+
