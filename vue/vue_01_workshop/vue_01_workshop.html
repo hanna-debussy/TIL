@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunch & Lotto</title>
+</head>
+
+<body>
+  <div id="app">
+    <h2>점심메뉴</h2>
+    <button @click="pickMenu">Pick One</button>
+    <p v-show="menu">{{ menu }}</p>
+    <hr>
+
+    <h2>로또</h2>
+    <button @click="getLuck">Get Lucky Numbers</button>
+    <p v-show="luckyNumbers.length">{{ luckyNumbers }}</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
+  <script>
+    const app = new Vue({
+      el: "#app",
+      data: {
+        // 데이터 초기값이 비어있을 경우, 앞으로 세팅될 데이터의 자료형으로 두는 게 좋다
+        menu: "",
+        menus: ["김치말이국수", "녹두전", "냉면", "김치찜", "회"],
+        luckyNumbers: [],
+      },
+      methods: {
+        pickMenu () {
+          this.menu = _.sample(this.menus)
+        },
+        getLuck() {
+          const numbers = _.range(1, 46)
+          this.luckyNumbers = _.sortBy(_.sampleSize(numbers, 6))
+          // .sort()로 정렬하면 숫자도 string 처리해서 가장 왼쪽 자리수부터 비교함 사전처럼
+        }
+      },
+      // 시작할 때 바로 실행될 콜백함수
+      created: function() {
+        // 스코프가 잡아줄 수 있도록,,~
+        this.pickMenu()
+        this.getLuck()
+      }
+    })
+  </script>
+</body>
+
+</html>
