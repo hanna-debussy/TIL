@@ -19,16 +19,26 @@
   <div id="app">
     <!-- 속성 바인딩 -->
     <img v-bind:src="imageSrc" alt="">
-    <img :src="imageSrc" alt="">
+    <img :src="imageSrc" :alt="altMsg">
     <hr>
 
     <!-- 클래스 바인딩 -->
+    <!-- isRed 값에 따라 active라는 class를 활성화/비활성화 -->
     <div :class="{ active: isRed }">
       클래스 바인딩
+    </div>
+    <div :class="[activeRed, myBackground]">
+      놀고 싶다
     </div>
     <hr>
 
     <!-- 스타일 바인딩 -->
+    <p style="font-size: 30px;">
+      this is paragraph
+    </p>
+    <p :style="{ fontSize: fontSize + 'px' }">
+      how bout this?
+    </p>
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -36,8 +46,12 @@
     const app = new Vue({
       el: '#app',
       data: {
+        altMsg: "dummytest",
         imageSrc: 'https://picsum.photos/200/300/',
         isRed: true,
+        activeRed: "active",
+        myBackground: "my-background-color",
+        fontSize: 40,
       }
     })
   </script>

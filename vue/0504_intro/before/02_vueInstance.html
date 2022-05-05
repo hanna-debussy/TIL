@@ -10,6 +10,7 @@
   <!-- View -->
   <div id="app">
     {{ message }}
+    {{ greeting() }}
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -21,7 +22,13 @@
       data: {
         message: "hello world",
       },
-      methods: {}, 
+      methods: {
+        greeting: function () {
+          const newMessage = this.message + "!!!!!!!!!!!!!!!!!!!!!!!!"
+          console.log(newMessage)
+          return newMessage
+        }
+      }, 
     }
     
     // ViewModel

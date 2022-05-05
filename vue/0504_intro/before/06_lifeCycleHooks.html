@@ -8,7 +8,12 @@
 </head>
 <body>
   <div id="app">
+    <!-- 
+      v-if - 만약 imgSrc 값이 있다면 이 img 태그는 보일 것
+      :src - data의 imgSrc와 묶여있구나
+    -->
     <img v-if="imgSrc" :src="imgSrc" alt="sample img">
+    <button @click="getImg">DOG</button>
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -28,6 +33,13 @@
             })
         }
       },
+      // 실행되자마자 응애
+      created: function() {
+        console.log("created but not mounted yet")
+        this.getImg()
+      }
+      // ...등의 여덟 가지 라이프사이클 훅이 있음 언제 내가 뭘 할지
+      // 근데 99퍼를 created만 쓰기 때문에...
     })
   </script>
 </body>

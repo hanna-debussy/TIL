@@ -8,10 +8,32 @@
 </head>
 <body>
   <div id="app">
+    <p>original: {{ message }}</p>
+    <p>reversed: {{ reverseMessage() }}</p>
+    <p>computed: {{ computedReversedMessage }}</p>
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script>
+    const app = new Vue({
+      el: "#app",
+      data: {
+        message: "original",
+      },
+      // 주로 데이터를 바꾸는 거 (setter함수)
+      methods: {
+        reverseMessage() {
+          return this.message.split("").reverse().join("")
+        },
+      },
+      // 데이터를 통해 어떤 값을 얻는 거 (getter 함수)
+      computed: {
+        // data에 의존하는 계산된 '값' (not function)
+        computedReversedMessage() {
+          return this.message.split("").reverse().join("")
+        }
+      },
+    })
   </script>
 </body>
 </html>

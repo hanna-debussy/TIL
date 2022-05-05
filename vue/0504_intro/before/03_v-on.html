@@ -9,14 +9,49 @@
 <body>
   <div id="app">
     <!-- 메서드 핸들러 -->
+    <button v-on:click="alertHello">Btn</button>
+    <button @click="alertHello">Btn</button>
 
     <!-- 기본 동작 방지 -->
+    <form action="" @submit.prevent="alertHello">
+      <button>haha</button>
+    </form>
+    
+    <!-- 키 별칭을 이용한 키 입력 수식어 -->
+    <!-- 스페이스를 keyup했을 때에만 하게 해줘! -->
+    <input type="text" @keyup.space="alertHello">
+    <!-- 엔터를 keyup했을 때에만 하게 해줘! -->
+    <input type="text" @keyup.enter="alertHello">
 
-    <!-- 키 별칭을 이용한 키 입력 수식어 -->    
+    <!-- 이렇게 넘기면 event 자체가 콘솔에 나오겠지 -->
+    <input type="text" @keyup.enter="log">
+    <!-- log('a')가 뭔 뜻이냐면 log를 실행할 건데 1번 인자로 a를 넘기고 싶다 이말임 -->
+    <input type="text" @keyup.enter="log('이게인자로넘어가서콘솔에보일겁니다')">
+
+    <p>{{ message }}</p>
+    <button @click="changeMessage">change</button>
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script>
+  const app = new Vue({
+    el: "#app",
+    data: {
+      message: "original message",
+    },
+    methods: {
+      alertHello: function() {
+        alert("hey")
+      },
+      log: function(any) {
+        console.log(any)
+      },
+      changeMessage() {
+        this.message = "change message!"
+      },
+    },
+  })
+  
   </script>
 </body>
 </html>

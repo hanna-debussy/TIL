@@ -8,10 +8,24 @@
 </head>
 <body>
   <div id="app">
+    <p v-if="seen">seen is TRUE</p>
+
+
+    <p v-if="myType === 'A'">A</p>
+    <p v-else-if="myType === 'B'">B</p>
+    <p v-else-if="myType === 'C'">C</p>
+    <p v-else>NOT A/B/C</p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script>
+    const app = new Vue({
+      el: "#app",
+      data: {
+        seen: false,
+        myType: "A",
+      }
+    })
   </script>
 </body>
 </html>

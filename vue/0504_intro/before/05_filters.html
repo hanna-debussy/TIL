@@ -8,15 +8,32 @@
 </head>
 <body>
   <div id="app">
+    <p>{{ numbers | getOddNumbers }}</p>
+    <p>{{ numbers | getOddNumbers | getUnderTen }}</p>
+    <p>{{ getOddUnderTen }}</p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script>
+    // 그냥 할 수 있다... 정도로 알아둘 것
     const app = new Vue({
       el: '#app',
       data: {
         numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
       },
+      filters: {
+        getOddNumbers(array) {
+          return array.filter(num => num % 2)
+        },
+        getUnderTen(array) {
+          return array.filter(num => num < 10)
+        }
+      },
+      computed: {
+        getOddUnderTen() {
+          return this.numbers.filter(num => num % 2 && num < 10)
+        }
+      }
     })
   </script>
 </body>

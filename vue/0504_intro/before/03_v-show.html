@@ -8,10 +8,19 @@
 </head>
 <body>
   <div id="app">
+    <p v-show="isTrue">TRUE</p>
+    <p v-show="ifFalse">FALSE</p>
   </div>
   
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script>
+    const app = new Vue({
+      el: "#app",
+      data: {
+        isTrue: true,
+        ifFalse: false,
+      },
+    })
   </script>
 </body>
 </html>
