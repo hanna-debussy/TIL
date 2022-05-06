@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center m-5">Detail</h1>
+
+<div class="text-center">
+    <img src="{{ movie.poster_path }}" alt="movie poster">
+
+    <h3 class="m-5">{{ movie.title }}</h3>
+    <p>release_date : {{ movie.release_date }}</p>
+    <p>popularity : {{ movie.popularity }}</p>
+    <p>vote_count : {{ movie.vote_count }}</p>
+    <p>vote_average : {{ movie.vote_average }}</p>
+    <p class="mb-5">genres : {% for genre in genres %}{{ genre }} {% endfor %} </p>
+    {% if movie.overview %}
+    <p>overview : {{ movie.overview }}</p>
+    {% endif %}
+</div>
+<div class="m-5 text-end">
+    <a href="{% url 'movies:recommended' movie.pk%}">
+        <button class="btn btn-primary">Recommendation</button>
+    </a>
+</div>
+
+
+{% endblock %}

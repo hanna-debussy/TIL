@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1 class="m-5 text-center">Recommendation</h1>
+    <hr>
+ 
+    {% for movie in  recommended_list %}
+    <a href="{% url 'movies:detail' movie.id%}">
+        <p>{{ movie.title }}</p>
+    </a>
+    <p>{{ movie.vote_average }}</p>
+    <p>{{ movie.overview }}</p>
+    <hr>
+    {% endfor %} 
+
+
+{% endblock %}
