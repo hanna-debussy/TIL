@@ -157,5 +157,120 @@ Y
 
 하면 main.js의 new Vue에는 router가 등록되고 src 안에는 router라는 폴더가 생긴다. 쏘 스맕
 
+component와 달리 views에는 router와 관련된 vue들이 들어가고, 보통 `ㅁㅁView.vue`의 이름을 가진다.
+
+
+
+```js
+// index.js
+// 건들지 않는 기본틀 제외
+
+
+// views가 index가 들어있는 router 폴더 상위 폴더인 src에 있으므로 ../로 갈 수 있다
+import LunchView from '../views/LunchView.vue'
+// 아니면 src 폴더 자체를 '@'라고 표현하기도 한다 오직 vue에서만! 다른 데서는 못 알아먹음
+import LottoView from '@/views/LottoView.vue'
+
+
+const routes = [
+  {
+    // URL
+    path: "/url-name",
+    
+    // 별명
+    name: "name",
+
+    // 어떤 component와 매핑되는지
+    component: NameView,
+  },
+  {
+    // :ㅁㅁ해두면 ㅁㅁ란 이름으로 데이터가 연결이 된다 이말이야 
+    path: "/lotto/:count",
+    name: "lotto",
+    component: LottoView,
+  }
+]
+
+```
+
+```vue
+<!-- App.vue -->
+
+
+<template>
+  <div id="app">
+    <nav>
+      <router-link to="/">Home</router-link> |
+      <!--
+		{% url %}의 역할을 하는 게 바로 router-link다.
+		:to=로 갈 수 있고 데이터라는 걸 알려주기 위해 {}안에 넣는다
+		주소의 다른 변수는 params에서 꺼내온다
+	  -->
+      <router-link :to="{ name: 'lunch' }">Lunch</router-link> |
+      <router-link :to="{ name: 'lotto', params: { count: 6 } }">Lotto</router-link>
+    </nav>
+    <!-- div 안에 넣어주는 게 국룰 -->
+    <div class="container">
+      <router-view/>
+    </div>
+  </div>
+</template>
+```
+
+
+
+```vue
+<!-- ㅁㅁView.vue -->
+
+
+
+<template>
+  <div>
+    <h1>{{ data 속 값들을 불러올 때 }}</h1>
+    <div>
+      <h2>{{ luckyNumbers }}</h2>
+      <button @click="pickLotto">pick</button>
+      <button @click="moveToAnotherPage">another page</button>
+    </div>
+  </div>
+</template>
+
+<script>
+// lodash는 이렇게 불러온다
+import _ from "lodash"
+
+export default {
+  name: "ㅁㅁView",
+  data () {
+    return {
+      // url의 변수는 this.$route.params.로 가져올 수 있다
+      count: this.$route.params.count,
+      luckyNumbers: [],
+    }
+  },
+  methods: {
+    pickLotto() {
+      // const count = this.$route.params.count 여기서 이렇게 불러줘도 가능
+      const numbers = _.range(1, 46)
+      this.luckyNumbers = _.sampleSize(numbers, this.count)
+    },
+    moveToAnotherPage() {
+      // $route 아님 $router임...
+      // $router.push({})를 통해 다른 View로 보낼 수 있다
+      this.$router.push({ name: "lotto", params: { count: 6 }})
+      // or template에서 louter-link로 하거나
+    },
+  },
+  created() {
+    this.pickLotto()
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
 
 
