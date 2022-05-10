@@ -51,6 +51,7 @@ export default {
   // 2. 등록하기Register
   components: {
       ComponentName,
+      // 'template에서부를이름: 컴포넌트이름' 으로 써도 된다
   },
     
   // data는 반드시 function의 모양을 해야 한다
@@ -137,6 +138,15 @@ export default {
 
 </style>
 ```
+
+
+
+## Pass Props & Emit Events
+
+Pass Props: 부모가 자식에게 데이터를 주는 것
+Emit Evnets: 자식이 부모에게 데이터를 주는 것 (나에게 일어난 일을 메시지로 전달)
+
+부모가 자식 이상의 손자(?)에게나, 자식이 부모 이상의 조상에게 데이터를 넘기는 건 불가능하다.
 
 
 
