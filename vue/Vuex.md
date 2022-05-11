@@ -46,7 +46,10 @@ $ vue add vuex
 <template>
   <div>
     Grandpa Grandma
-    <input type="text">  
+    <p>
+      <!-- mapGetters로 가져오면 getters 이름 그대로 가져올 수 있다 -->
+      getters에서 계산된 걸 가져오면: {{ completedDataCount }}
+    </p> 
     <component-name></component-name>
     <child-vue></child-vue>
   </div>
@@ -56,12 +59,18 @@ $ vue add vuex
 import ComponentName from '@/components/ComponentName.vue'
 import ChildVue from '@/components/ChildVue.vue'
 
+// map 붙이면 다 가져올 수 있구먼
+import { mapGetters } from "vuex"
+
 export default {
   name: "Grand",
   components: {
     ComponentName,
     ChildVue,
-  }
+  },
+  computed: {
+    ...mapGetters(["completedDataCount", ])
+  },
 }
 </script>
 
@@ -111,8 +120,13 @@ export default {
 
 <template>
   <div>
-    {{ propsName.title }}
-    <button @click="deleteData">
+    <!-- 제목을 누르면 isCompleted를 갱신하고 싶어 그리구 했다면 취소선 그을래 -->
+    <span
+      @click="updateData(propsnName)"
+      :class="{'is-completed': propsName.isCompleted}"
+    >{{ propsName.title }}</span>
+    <!-- deleteData 해주시고 propsName 데이터도 넘겨주세요 -->
+    <button @click="deleteData(propsName)">
         삭제빵
     </button>
   </div>
@@ -140,7 +154,7 @@ export default {
   // 아니면 더 킹받게 확 줄이려면
   methods: {
     // ... 쓰는 이유는 다른 내가 만든 methods들 가져오기 위해... args 들고오는 거 ㅇㅇ
-    ...vue.mapActions(["createDataMethod", "deleteData"]),
+    ...vue.mapActions(["createDataMethod", "deleteData", "updateData"]),
     myMethods() {
       // 내가 만든 어쩌구저쩌구
     },
@@ -149,7 +163,12 @@ export default {
 </script>
 
 <style>
-
+  .is_completed {
+    text-decoration: line-through;
+  }
+  div {
+    border: 2px solid blue;
+  }  
 </style>
 ```
 
@@ -216,7 +235,11 @@ export default new Vuex.Store({
     ],
   },
   getters: {		// computed
-        
+    completedDataCount(state) {
+      return state.dataName.filter(oneData => {
+        return oneData.isCompleted
+      }).length
+    },
   },
   mutations: {	// change
     // 오 강조의 의미로 보통 생성 함수를 대문자로 쓴다나봐
@@ -232,6 +255,18 @@ export default new Vuex.Store({
       const index = state.dataName.indexOf(deleteItem)  // 여기는 js 부분
       // splice라고 첫 번째 인자 index에서부터 (두 번째 인자)개를 지우는 게 있어
       state.dataName.splice(index, 1)
+    },
+      
+    // ㅇㅇ업뎃해줄게
+    UPDATE_DATA(state, oldData) {
+      const updatedData = state.dataName.map(oneData => {
+        // 데이터들 중에 해당하는(일치하는) 데이터라면
+        if (oneData === oldData) {
+          // 박궈 박궈
+          oneData.isCompleted = !todo.isCompleted
+        }
+        return oneData
+      })
     }
   },
   actions: {		// methods
@@ -258,30 +293,89 @@ export default new Vuex.Store({
     deleteData({ commit }, deleteItem) {
       // mutation아 함만 해조
       commit("DELETE_DATA", deleteItem)
-    }
+    },
+      
+    // 업뎃
+    updateData({ commit }, oldData) {
+      commit("UPDATE_DATA", oldData)
+    },
+    
+    
   },
 })
 ```
 
 
 
+## 새고를 해도 남아있는 견고함
+
+지금까지 만든 건 새로고침을 하면 여태 만들었던 데이터가 날아간다. 어데갔으묘? 그래서 해야 하는 게 `localStorage`를 써야 한다.
+
+```js
+// 데이터를 새고해도 날아가지 않게 스토리지에 저장을 하자고
+  
+  mutations: {
+    LOAD_DATA(state) {
+      // 진짜 로드하기 위해 파싱 해주기
+      const dataString = localStorage.getItem("dataName")
+      state.dataName = JSON.parse(dataString)
+    }
+  }
+
+  actions: {
+	saveData({ state }) {
+      const jsonData = JSON.stringfy(state.dataName)
+      localStorage.setItem("dataName" jsonData)
+    },
+        
+    createDataMethod({ commit, dispatch}, 어쩌구) {
+      // 저쩌구
+      dispatch("saveData")
+    }
+    // delete에도, update에도, ...
+  }
+```
+
+```vue
+<!-- App.vue -->
+
+<script>
+import { mapMutations } from "vuex"
+    
+// ...어쩌구
+  methods: {
+	...mapMutations(["LOAD_DATA"]),
+  },
+  created() {
+    this.LOAD_DATA()
+  }
+</script>
+
+
+```
 
 
 
+근데 항상 라이브러리가 해내죠?
 
+```bash
+$ npm i vuex-persistedstate
+```
 
+```js
+<!-- store/index.js -->
 
+import createPersistedState from 'vuex-persistendstate'
 
+// Store 넣고
+export default new Vuex.Store({
+  plugins: [
+    createPersistedState({
+      paths: ["vueName1", "vueName2", 등등]
+    })
+  ],
+  // 나머지 원래 것들 붙여넣기
+})
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
+이러면 vue들에서 저 위에 했던 짓들 다 안 해도 됨 cool~
