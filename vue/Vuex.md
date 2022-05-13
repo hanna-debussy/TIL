@@ -69,7 +69,11 @@ export default {
     ChildVue,
   },
   computed: {
-    ...mapGetters(["completedDataCount", ])
+    ...mapGetters([
+      "completedDataCount",
+      "uncompletedDataCount",
+      "totalDataCount",
+  	])
   },
 }
 </script>
@@ -88,7 +92,7 @@ export default {
     <!-- key도 겹치지 않는 걸로 꼭 필요 -->
     <child-vue
       v-for="data in computedDataName"
-      :key="dataName.date"
+      :key="data.date"
       :propsName="propsName"
     ></child-vue>
   </div>
@@ -105,7 +109,8 @@ export default {
   computed: {
     computedDataName() {
       return this.$store.state.dataName
-    }
+    },
+    // 아니면 import { mapState } from 'vuex' 적고 ...mapState(["todos"]),
   }
 }
 </script>
@@ -154,7 +159,8 @@ export default {
   // 아니면 더 킹받게 확 줄이려면
   methods: {
     // ... 쓰는 이유는 다른 내가 만든 methods들 가져오기 위해... args 들고오는 거 ㅇㅇ
-    ...vue.mapActions(["createDataMethod", "deleteData", "updateData"]),
+    // import { mapActions } from 'vuex' 하고
+    ...mapActions(["createDataMethod", "deleteData", "updateData"]),
     myMethods() {
       // 내가 만든 어쩌구저쩌구
     },
@@ -190,7 +196,7 @@ export default {
     return {
       inputTitle: "",
     }
-  }
+  },
   methods: {
     createData() {
       // 우리가 넘겨줄 데이터 정의해주고
@@ -259,7 +265,7 @@ export default new Vuex.Store({
       
     // ㅇㅇ업뎃해줄게
     UPDATE_DATA(state, oldData) {
-      const updatedData = state.dataName.map(oneData => {
+      state.dataName = state.dataName.map(oneData => {
         // 데이터들 중에 해당하는(일치하는) 데이터라면
         if (oneData === oldData) {
           // 박궈 박궈
@@ -370,9 +376,7 @@ import createPersistedState from 'vuex-persistendstate'
 // Store 넣고
 export default new Vuex.Store({
   plugins: [
-    createPersistedState({
-      paths: ["vueName1", "vueName2", 등등]
-    })
+    createPersistedState()
   ],
   // 나머지 원래 것들 붙여넣기
 })
