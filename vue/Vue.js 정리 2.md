@@ -150,8 +150,7 @@ export default {
 	// ♣♣ 4번: 똑같이 methods에 이벤트 받는 행위 적어줌
     fromChild(함수라아무인자이름을써도되지만굳이그럴필요는없으므로childInput) {
       this.fromChild = childInput
-      // 뭐 자식 emit과 달라도 되는데 이것도 굳이...?
-      this.$emit("child-data", this.childData)
+      this.$emit("child-data", this.fromChild)
     }
   }
 }
