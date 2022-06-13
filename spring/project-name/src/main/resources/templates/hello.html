@@ -1,0 +1,14 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<p th:text="'hello. ' + ${data}">hello~!</p>
+<!--이제 8080/hello 가면 controller에서 'data'라 지정했던 것의 value인 hello가 나타난다-->
+</body>
+</html>
