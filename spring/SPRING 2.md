@@ -215,6 +215,8 @@ public class MemoryMemberRepository implements MemberRepository{
 
 ```
 
+근데 이 틀을 더 쉽게 만드는 방법이 있다. 그건 좀 더 밑에.
+
 
 
 ### 회원가입
@@ -316,5 +318,115 @@ public class MemberService {
     }
 }
 
+```
+
+
+
+### 다시 테스트케이스
+
+이번엔 그 클래스 이름(혹은 내부)에 커서를 두고 alt+enter를 하면 거기에 create test라고 있을 것이다. 그걸 하면 위에 했던 동작 그대로 한다. test 안에 package 만들어지고, 그 안에 ~Test 라는 이름으로 class가 생성된다. 안에 틀도 다 짜여져서 만들어진다. 그래서 우리는 그 안을 채워넣기만 하면 된다.
+
+```java
+// 이게 최초 틀... 다 줄게
+
+package hello.projectname.service;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class MemberServiceTest {
+
+    @Test
+    void join() {
+    }
+
+    @Test
+    void findMembers() {
+    }
+
+    @Test
+    void findOne() {
+    }
+}
+```
+
+
+
+#### 회원가입 테케 + Dependency Injection (DI)
+
+```java
+class MemberServiceTest {
+
+    MemberService memberService;
+
+    // for DB clearing
+    // MemoryMemberRepository memberRepository = new MemoryMemberRepository();
+    MemoryMemberRepository memberRepository;
+    // 처럼 새로 또 생성을 해줘도 되지만 하나의 repository에 다 넣기 위해서 아래처럼 해준다
+
+    @BeforeEach
+    public void beforeEach() {
+        memberRepository = new MemoryMemberRepository(); // 생성해주고
+        memberService = new MemberService(memberRepository); // 그걸 이용하게
+    }
+
+    @AfterEach
+    public void afterEach() {
+        memberRepository.clearStore();
+    }
+
+
+    @Test
+    void 회원가입이라고한국어로적어도된다test는실제빌드되는코드가아니라서() {
+        // given 이러한 게 주어졌을 때
+        Member member = new Member();
+        member.setName("Hello");
+
+        // when 이 상황에는
+        Long savedId = memberService.join(member);
+
+        // then 이렇게 되어야 해
+        Member findMember = memberService.findOne(savedId).get();
+        Assertions.assertThat(member.getName()).isEqualTo(findMember.getName());
+    }
+
+    @Test
+    public void 중복회원예외() {
+        // given
+        Member mem1 = new Member();
+        mem1.setName("spring");
+
+        Member mem2 = new Member();
+        mem2.setName("spring");
+
+        //when
+        memberService.join(mem1);
+        //try-catch도 좋지만
+        assertThrows(IllegalStateException.class, () -> memberService.join(mem2));
+        // assertThrows(예외종류, () -> 내가 실행시킬 것) 아 람다함수네
+        // 그래서 실제 join에서 지정한 예외(illegalstate)가 터진 게 맞는지 확인
+
+        //then
+    }
+
+}
+```
+
+```java
+// 테케 돌리는 원 class에도 DI 관련 처리
+
+public class MemberService {
+    // 이렇게 repository를 만들기보다
+    // private final MemberRepository memberRepository = new MemoryMemberRepository();
+
+    // 외부에서 만들어진 repository를 넣겠다 이말이야
+    private final MemberRepository memberRepository;
+
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+    
+}
 ```
 
