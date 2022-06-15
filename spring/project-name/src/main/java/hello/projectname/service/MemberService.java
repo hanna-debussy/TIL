@@ -3,6 +3,8 @@ package hello.projectname.service;
 import hello.projectname.domain.Member;
 import hello.projectname.repository.MemberRepository;
 import hello.projectname.repository.MemoryMemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;

@@ -430,3 +430,83 @@ public class MemberService {
 }
 ```
 
+
+
+### Spring Bean
+
+spring bean을 등록하는 두 가지 방법
+
+1. Annotation 사용: 컴포넌트 스캔과 자동 의존관계 설정 (ex.`@Controller` `@Service` `@Repository` `@Autowired`...)
+
+   ```java
+   // example
+   
+   // MemoryMemberRepository
+   @Repository // repository라고 spring container에 알려주고 등록
+   public class MemoryMemberRepository implements MemberRepository{
+   }
+   
+   // HelloController
+   @Controller
+   public class HelloController {
+   }
+   
+   // MemberService
+   @Service
+   public class MemberService {
+   }
+   
+   
+   // 공유된 걸 부를 때
+   @Controller
+   public class MemberController {
+       // 여러 개 생성할 필요가 없으니까 new MemberService()로 할 필요 x
+       private final MemberService memberService;
+   
+       @Autowired // spring container에서 관리되고 있는 걸 넣어주는(연결해주는)
+       public MemberController(MemberService memberService) {
+           this.memberService = memberService;
+       }
+   }
+   
+   ```
+
+   
+
+2. 자바 코드로 직접 스프링 빈 등록
+
+   ```java
+   // src/main/java/group.projectname 에 SpringConfig class 생성
+   
+   package hello.projectname;
+   
+   import hello.projectname.repository.MemberRepository;
+   import hello.projectname.repository.MemoryMemberRepository;
+   import hello.projectname.service.MemberService;
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.context.annotation.Configuration;
+   
+   @Configuration // 1 내가 직접 지정해보겠다 이말이야
+   public class SpringConfig {
+       @Bean // 3 그걸 쓰는 MemberService 있고 이거 두개를 직접 bean에 넣어준 거
+       public MemberService memberService() {
+           return new MemberService(memberRepository());
+       }
+       
+       @Bean // 2 얘가 일차적으로 있고
+       public MemberRepository memberRepository() {
+           return new MemoryMemberRepository();
+       }
+   
+       // 근데 Controller는 Autowired로 해야 함...
+   }
+   
+   ```
+
+   
+
+spring bean을 감지하는 범위는 `src/main/java/group.projectname/`안에 있는 애들만 스캔
+
+
+
+> 스프링 빈을 등록할 때, 기본적으로 싱글톤으로 등록한다(=유일하게 하나만 등록해서 전부 그걸 공유한다).
