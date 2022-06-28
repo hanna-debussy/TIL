@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js">// 라이브러리들</script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js">// html로 옮겨주는 거</script>
+<script>
+    const root = document.getElementById("root");
+    const span = React.createElement(
+        "span", 
+        {id: 'cool-span', style: {color: "red"}}, // 속성
+        "Hello I'm span" // 내용
+    ); // element 만들어줘
+
+    const btn = React.createElement(
+        "button", // html 만들고,
+        {
+            id: "id",
+            onClick: () => console.log("im clicked")
+        }, // eventListener 바로 등록하고,
+        "click me" // content도 바로 작성 가능
+    );
+
+    const container = React.createElement("div", null, [span, btn]); // el 안에 el 넣기
+    
+    ReactDOM.render(container, root); // container을 root 안에 넣어줘(rendering해줘)
+</script>
+</html>

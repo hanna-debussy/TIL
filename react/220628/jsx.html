@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js">// 라이브러리들</script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js">// html로 옮겨주는 거</script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js">// jsx 변환해주는 거</script>
+<script type="text/babel"> // babel 적어줘야 인식
+    const root = document.getElementById("root");
+
+    const Title = () => ( // own components는 대문자 국룰
+        <h3 id="title" onMouseEnter={() => console.log("mouse enter")}>
+            Hello im title    
+        </h3>
+    );
+
+    const Button = () => (
+        <button
+            style={
+                {backgroundColor: "tomato",}
+            }
+            onClick={() => console.log("im clicked")}
+        >
+            Click me
+        </button>
+    );
+
+
+    const Container = () => (
+        <div>
+            <Title />
+            <Button />
+        </div>
+    ); // 함수처럼 쓰네 신기티비 재사용 쌉가능
+
+    ReactDOM.render(<Container />, root);
+</script>
+</html>

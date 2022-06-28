@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js">// 라이브러리들</script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js">// html로 옮겨주는 거</script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js">// jsx 변환해주는 거</script>
+<script type="text/babel"> // babel 적어줘야 인식
+
+function MinutesToHours() {
+  const [amount, setAmount] = React.useState(0);
+  const onChange = (event) => {
+    setAmount(event.target.value);
+  };
+
+  const reset = () => setAmount(0)
+
+  const [inverted, setInverted] = React.useState(false);
+  const onFlip = () => {
+    reset();
+    setInverted((current) => !current);
+  }  
+
+  return (
+    <div>                    
+      <div>
+        <label htmlFor="minutes">'for' is reserved so...</label>
+        <input
+          value={inverted ? amount * 60 : amount}
+          id="minutes"
+          placeholder="Minutes"
+          type="number"
+          onChange={onChange}
+          disabled={inverted}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="hours">thats why we use 'htmlFor'</label>
+        <input
+          value={inverted ? amount : Math.round(amount / 60)}
+          id="hours"
+          placeholder="Hours"
+          type="number"
+          onChange={onChange}
+          disabled={!inverted}
+        />
+      </div>
+
+      <button onClick={reset}>reset</button>
+      <button onClick={onFlip}>{inverted ? "turn back" : "invert"}</button>
+    </div>
+  );
+}
+    
+function KmToMiles() {
+  return (
+    <div>
+      <h3>km to miles</h3>
+      <p>다시 짜보기</p>
+    </div>
+  )
+}
+
+function App() {
+  const [index, setIndex] = React.useState("x");
+
+  const onSelect = (event) => {
+    setIndex(event.target.value)
+  }
+
+  return (
+    <div>                    
+      <h1>Super Converter</h1>
+      <select value={index} onChange={onSelect}>
+        <option value="x">Select your units</option>
+        <option value="0">Minutes & Hours</option>
+        <option value="1">km & Miles</option>
+      </select>
+      <hr/>
+      {index === "x" ? "please select ur units" : null}
+      {index === "0" ? <MinutesToHours /> : null}
+      {index === "1" ? <KmToMiles /> : null}
+
+    </div>
+  );
+}
+    
+
+const root = document.getElementById("root");
+ReactDOM.render(<App />, root);
+</script>
+</html>

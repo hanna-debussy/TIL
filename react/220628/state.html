@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js">// 라이브러리들</script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js">// html로 옮겨주는 거</script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js">// jsx 변환해주는 거</script>
+<script type="text/babel"> // babel 적어줘야 인식
+
+function App() {
+  
+  const [counter, setCounter] = React.useState(0); // 이거 자체가 [data, func] 형태라서 const를 바로 저렇게 해주는 거
+  
+  const onClick = () => {
+    // setCounter(counter + 1);
+    setCounter((current) => current + 1); // better
+  };
+  
+  return (
+    <div>                    
+      <h3>total clicked: {counter}</h3>
+      <button onClick = {onClick}>Click me</button>
+    </div>
+  )
+}
+    
+    
+const root = document.getElementById("root");
+ReactDOM.render(<App />, root);
+</script>
+</html>

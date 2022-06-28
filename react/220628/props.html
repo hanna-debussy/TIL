@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js">// 라이브러리들</script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js">// html로 옮겨주는 거</script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js">// jsx 변환해주는 거</script>
+<script src="https://unpkg.com/prop-types@15.6/prop-types.js">// prop types 타입 체크해주는 거</script>
+<script type="text/babel"> // babel 적어줘야 인식
+
+function Btn({ text, changeValue, fontSize = 20 }) { // 아 props.text 를 { text }로 쓸 수 있는 건 이름이 같으니까 (ES6)
+  console.log(text, "was rendered")
+  return (
+    <button
+      onClick={changeValue}
+      style={{
+        backgroundColor: "tomato",
+        color: "white",
+        height: "50px",
+        border: 0,
+        borderRadius: 10,
+        fontSize,
+      }}
+    >
+    헐 개쩐다 {text}
+    </button>
+  )
+}
+
+
+const MemorizedBtn = React.memo(Btn);
+
+
+// prop으로 보내는 것들의 type을 정해주고 일치하지 않으면 console에서 알려줌
+Btn.propTypes = {
+  text: PropTypes.string,
+  fontSize: PropTypes.number.isRequired, // 필수 지정까지 가능
+}
+
+
+function App() {
+
+  const [value, setValue] = React.useState("눌러보세요");
+  const changeValue = () => setValue("짜잔");
+
+  return (
+    <div>
+      <Btn text={value} changeValue={changeValue} fontSize={38} />
+      여기서 changeValue는 eventListener가 아니라 하나의 props가 된다
+      <hr/>
+      <MemorizedBtn text="stop re-rendering"/>
+      얘는 변화가 없으니 re-render가 앞으로 필요 없을 거라고 memo를 해두는 거
+    </div>
+  );
+}
+    
+
+const root = document.getElementById("root");
+ReactDOM.render(<App />, root);
+</script>
+</html>
